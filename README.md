@@ -27,3 +27,11 @@ Tecnologías utilizadas
 
 🔄 API REST (si aplica)(Entrega final con srpingboot)
 
+
+Participantes:
+
+Aurelio Velasquez 
+Maricela Ochoa
+Julian Posada
+Santiago Ramirez
+Maria Fernanda Herrera
