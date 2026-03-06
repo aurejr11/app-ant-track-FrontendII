@@ -1,9 +1,89 @@
-*{
+/* 1. Reset Global (Lo que ya tienes) */
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-size: 16px;
-    color: black;
+    color: #333; /* Un gris oscuro se ve más profesional que negro puro */
     text-decoration: none;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* 2. Contenedor Principal (El que separa Sidebar de Contenido) */
+.app-container {
+    display: flex;
+    min-height: 100vh; /* Ocupa todo el alto de la pantalla */
+    width: 100%;
+}
+
+/* 3. Componente Uno (Sidebar a la izquierda) */
+.sidebar {
+    width: 250px; /* Ancho fijo para el menú */
+    background-color: #f0f2f5; /* Gris claro como la imagen */
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra el texto verticalmente */
+    align-items: center;
+}
+
+/* 4. Área de Contenido (Derecha: Componente Dos + Tres) */
+.main-content {
+    flex: 1; /* Ocupa el resto del espacio disponible */
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    gap: 30px; /* Espacio entre el banner y las cards */
+}
+
+/* 5. Componente Dos (Banner superior) */
+.banner {
+    width: 100%;
+    height: 400px; /* Ajusta según necesites */
+    background-color: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 6. Contenedor de las 3 Cards (Alineación horizontal) */
+.cards-row {
+    display: flex;
+    justify-content: space-between; /* Separa las cards equitativamente */
+    gap: 20px;
+}
+
+/* 7. Componente Tres (Las Cards individuales) */
+.card {
+    flex: 1; /* Hace que las 3 midan lo mismo */
+    background-color: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Parte superior de la card (Gris) */
+.card-body {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Parte inferior de la card (Blanca con Título) */
+.card-footer {
+    flex: 1;
+    background-color: white;
+    border-top: 1px solid #ddd;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
 }
