@@ -1,6 +1,6 @@
-import Sidebar from '../components/Sidebar'
-import Cards from '../components/Cards'
-import Footer from '../components/Footer'
+import Sidebar from './components/Sidebar.jsx';
+import Footer from './components/Footer.jsx';
+import Cards from './components/Cards.jsx';
 function Services(){
     return(
         <main>
