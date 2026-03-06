@@ -1,12 +1,14 @@
-import Sidebar from './components/Sidebar.jsx';
-import Footer from './components/Footer.jsx';
-import Cards from './components/Cards.jsx';
+import Sidebar from "../assets/components/Sidebar"
+import Cards from "../assets/components/Cards"
+import Footer from "../assets/components/Footer"
+
 function Services(){
+
     return(
+
         <main>
             <Sidebar />
-            <section className='container'>
-                <h1>Servicios</h1>
+            <section>
                 <section>
                     <Cards />
                     <Cards />
@@ -14,7 +16,9 @@ function Services(){
                 </section>
                 <Footer />
             </section>
+
         </main>
     )
 }
+
 export default Services
