@@ -1,22 +1,25 @@
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import React from 'react'
+import Header from './components/Header'
+import About from './components/About'
+import AsiFunciona from './components/AsiFunciona'
+import Experiencias from './components/Experiencias'
+import Contacto from './components/Contacto'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import Footer from './components/Footer'
 
-function App(){
-  return(
-    <div style={{
-      display:"flex",
-      flexDirection:"column",
-      minHeight:"100vh"
-    }}>
-      <Navbar />
-      <main style={{
-        flex:"1",
-        padding:"2rem",
-      }}>
-        <h2>Ant Track</h2>
-      </main>
-      <Footer />
+const App = () => {
+  return (
+    <div>
+      <Header/>
+      <About/>
+      <AsiFunciona/>
+      <Experiencias/>
+      <Contacto/>
+      <ToastContainer/>
+      <Footer/>
     </div>
   )
 }
+
 export default App
