@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { ENDPOINTS } from "../services/api";
+
 
 export default function DashboardPage() {
   const [gasto, setGasto] = useState({
@@ -11,10 +13,25 @@ export default function DashboardPage() {
     setGasto({ ...gasto, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Nuevo gasto:", gasto);
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("Enviando a:", ENDPOINTS.gastos.crear);
+
+  try {
+    const response = await fetch(ENDPOINTS.gastos.crear, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(gasto),
+    });
+    console.log("Respuesta del servidor:", response.status);
+  } catch (error) {
+    console.log("Error de red (backend no disponible):", error.message);
+  }
+
+};
+  
 
   return (
     <div className="min-h-screen bg-blue-50 p-8">
