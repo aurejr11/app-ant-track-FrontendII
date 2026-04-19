@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { toast } from 'react-toastify'
 
 const Contacto = () => {
 
@@ -16,10 +15,10 @@ const Contacto = () => {
         const data = await response.json();
         
         if (data.success) {
-            toast.success("¡Mensaje enviado con éxito!");
+            console.log("Mensaje enviado con éxito");
             event.target.reset();
         } else {
-            toast.error("Hubo un error, intenta de nuevo");
+            console.log("Hubo un error, intenta de nuevo");
         }
     };
 
