@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ENDPOINTS } from "../services/api";
+import Swal from "sweetalert2";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -12,15 +14,47 @@ export default function RegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registro:", formData);
+    try {
+      const response = await fetch(ENDPOINTS.auth.register, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "¡Cuenta creada!",
+          text: "Tu cuenta fue registrada correctamente.",
+          confirmButtonColor: "#2563eb",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error al registrarse",
+          text: "No se pudo crear la cuenta, intenta de nuevo.",
+          confirmButtonColor: "#2563eb",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Sin conexión",
+        text: "No se pudo conectar con el servidor.",
+        confirmButtonColor: "#2563eb",
+      });
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <img src="/antt.png" alt="AntTrack logo" className="w-20 mx-auto mb-4 invert"/>
+        <img
+          src="/antt.png"
+          alt="AntTrack logo"
+          className="w-20 mx-auto mb-4 invert"
+        />
         <h2 className="text-2xl font-bold mb-6 text-center">Crear cuenta</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -61,13 +95,16 @@ export default function RegisterPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           >
             Registrarse
           </button>
         </form>
         <p className="text-center text-gray-500 mt-4">
-          ¿Ya tienes cuenta? <Link to="/login" className="text-blue-600">Inicia sesión</Link>
+          ¿Ya tienes cuenta?{" "}
+          <Link to="/login" className="text-blue-600">
+            Inicia sesión
+          </Link>
         </p>
       </div>
     </div>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ENDPOINTS } from "../services/api";
-
+import Swal from "sweetalert2";
 
 export default function DashboardPage() {
   const [gasto, setGasto] = useState({
@@ -9,35 +9,58 @@ export default function DashboardPage() {
     categoria: "",
   });
 
+  const [gastos, setGastos] = useState([]);
+
+  useEffect(() => {
+    fetch(ENDPOINTS.gastos.listar)
+      .then((res) => res.json())
+      .then((data) => setGastos(data))
+      .catch((error) => console.log("Error al cargar gastos:", error.message));
+  }, []);
+
   const handleChange = (e) => {
     setGasto({ ...gasto, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log("Enviando a:", ENDPOINTS.gastos.crear);
-
-  try {
-    const response = await fetch(ENDPOINTS.gastos.crear, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(gasto),
-    });
-    console.log("Respuesta del servidor:", response.status);
-  } catch (error) {
-    console.log("Error de red (backend no disponible):", error.message);
-  }
-
-};
-  
+    e.preventDefault();
+    try {
+      const response = await fetch(ENDPOINTS.gastos.crear, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gasto),
+      });
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "¡Gasto registrado!",
+          text: "Tu gasto fue guardado correctamente.",
+          confirmButtonColor: "#2563eb",
+        });
+        setGasto({ monto: "", concepto: "", categoria: "" });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo registrar el gasto.",
+          confirmButtonColor: "#2563eb",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Sin conexión",
+        text: "No se pudo conectar con el servidor.",
+        confirmButtonColor: "#2563eb",
+      });
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-blue-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-8">
       <h2 className="text-2xl font-bold mb-6">Panel de gastos</h2>
-      <div className="bg-white p-6 rounded shadow-md max-w-md">
-        <img src="/antt.png"alt="AntTrack logo" className="w-20 mx-auto mb-4 invert"/>
+
+      <div className="bg-white p-6 rounded shadow-md max-w-md mb-8">
         <h3 className="text-lg font-semibold mb-4">Registrar nuevo gasto</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -83,11 +106,27 @@ export default function DashboardPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           >
             Registrar gasto
           </button>
         </form>
+      </div>
+
+      <div className="bg-white p-6 rounded shadow-md max-w-md">
+        <h3 className="text-lg font-semibold mb-4">Historial de gastos</h3>
+        {gastos.length === 0 ? (
+          <p className="text-gray-400">No hay gastos registrados aún.</p>
+        ) : (
+          <ul>
+            {gastos.map((g, index) => (
+              <li key={index} className="border-b py-2 flex justify-between">
+                <span>{g.concepto}</span>
+                <span className="font-semibold">${g.monto}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
