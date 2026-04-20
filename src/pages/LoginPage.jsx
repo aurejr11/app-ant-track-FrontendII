@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ENDPOINTS } from "../services/api";
+import { saveToken, saveUser } from "../helpers/local-storage";
 import Swal from "sweetalert2";
 
 export default function LoginPage() {
@@ -8,6 +9,8 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,12 +25,15 @@ export default function LoginPage() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
+        const data = await response.json();
+        saveToken(data.token);
+        saveUser(data.user);
         Swal.fire({
           icon: "success",
           title: "¡Bienvenido!",
           text: "Sesión iniciada correctamente.",
           confirmButtonColor: "#2563eb",
-        });
+        }).then(() => navigate("/dashboard"));
       } else {
         Swal.fire({
           icon: "error",
