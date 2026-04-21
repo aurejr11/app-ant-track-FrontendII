@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 
 export default function DashboardPage() {
   const [gasto, setGasto] = useState({
+    id: "",
+    userId: "",
     monto: "",
     concepto: "",
     categoria: "",

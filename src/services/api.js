@@ -1,6 +1,11 @@
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
 export const ENDPOINTS = {
+
+ // users:"/users.json", 
+ // gastos: "/gastos.json",
+
+  
   auth: {
     login: `${BASE_URL}/auth/login`,
     register: `${BASE_URL}/auth/register`,
