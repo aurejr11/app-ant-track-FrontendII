@@ -1,11 +1,15 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+//servidor levantado en otra temrinal dento de la app-ant-track
 
-export const ENDPOINTS = {
+const URL_BASE = "http://localhost:3001/";
 
- // users:"/users.json", 
- // gastos: "/gastos.json",
+export let endPoints = {
+
+  users: URL_BASE + "users/",
+  gastos: URL_BASE + "gastos/",
 
   
+
+  /*
   auth: {
     login: `${BASE_URL}/auth/login`,
     register: `${BASE_URL}/auth/register`,
@@ -23,5 +27,5 @@ export const ENDPOINTS = {
   },
   mediosPago: {
     listar: `${BASE_URL}/medios-pago`,
-  },
+  },*/
 };

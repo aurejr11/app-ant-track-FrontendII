@@ -1,33 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ENDPOINTS } from "../services/api";
+import { endPoints } from "../services/api";
 import { saveToken, saveUser } from "../helpers/local-storage";
 import Swal from "sweetalert2";
 
+
 export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [users, setUser] = useState([]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e) => {
+  function getUser(){
+    fetch(endPoints.users)
+    .then((response)=> response.json())
+    .then((data)=> setUser(data))
+  }
+
+useEffect(()=>{
+    getUser()
+
+},[])
+
+  //PARA VERIFICaR QUE CARGuEN
+  console.log(users)
+
+ function findUser(){
+    let auth = users.find((u) => email == u.email && password == u.password)
+    return auth
+
+}
+  
+  const handleSubmit =(e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch(ENDPOINTS.auth.login, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        saveToken(data.token);
-        saveUser(data.user);
+      
+      let userLogin= findUser();
+
+      //validaciones en el log
+      console.log(userLogin.name)
+
+      if (userLogin) {
+        
+        //saveToken(data.token);
+        //local sotarge
+        saveUser(userLogin);
+        
         Swal.fire({
           icon: "success",
           title: "¡Bienvenido!",
@@ -43,6 +64,7 @@ export default function LoginPage() {
         });
       }
     } catch (error) {
+      console.error(error)
       Swal.fire({
         icon: "error",
         title: "Sin conexión",
@@ -67,8 +89,8 @@ export default function LoginPage() {
             <input
               type="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e)=> setEmail(e.target.value)}
               placeholder="tucorreo@email.com"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required
@@ -79,8 +101,8 @@ export default function LoginPage() {
             <input
               type="password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e)=> setPassword(e.target.value)}
               placeholder="••••••••"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required

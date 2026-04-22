@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [MobileMenu, setMobileMenu] = useState(false)
-
+    const navigate = useNavigate();
+    
     useEffect(()=>{
         if(MobileMenu){
             document.body.style.overflow = 'hidden'
@@ -26,7 +28,8 @@ const Navbar = () => {
                 <a href="#AsiFunciona" className='cursor-pointer hover:text-gray-700'>Como funciona</a>
                 <a href="#Experiencias" className='cursor-pointer hover:text-gray-700'>Experiencias</a>
             </ul>
-            <button className='hidden md:block bg-white px-8 py-2 rounded-full cursor-pointer'>Login/Registro</button>
+            <button className='hidden md:block bg-white px-8 py-2 rounded-full cursor-pointer'
+                    onClick={() => navigate('/login')}>Login/Registro</button>
             <img onClick={()=> setMobileMenu(true)} src={assets.men_icon}className='md:hidden w-7 cursor-pointer' alt="" />
         </div>
         {/*------menu movil------- */}

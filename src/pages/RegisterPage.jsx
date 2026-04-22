@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { ENDPOINTS } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { endPoints } from "../services/api";
 import Swal from "sweetalert2";
 
 export default function RegisterPage() {
+
+  const navigate = useNavigate(); 
+
   const [formData, setFormData] = useState({
-    nombre: "",
+    name: "",
     email: "",
     password: "",
   });
@@ -17,7 +20,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(ENDPOINTS.auth.register, {
+      const response = await fetch(endPoints.users, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -28,7 +31,14 @@ export default function RegisterPage() {
           title: "¡Cuenta creada!",
           text: "Tu cuenta fue registrada correctamente.",
           confirmButtonColor: "#2563eb",
+        }).then((result) => {
+          //Redirigir al login después de que
+          navigate('/login');
         });
+        
+        // Limpiar formulari
+        setFormData({ name: "", email: "", password: "" });
+        
       } else {
         Swal.fire({
           icon: "error",
@@ -61,8 +71,8 @@ export default function RegisterPage() {
             <label className="block text-gray-600 mb-1">Nombre</label>
             <input
               type="text"
-              name="nombre"
-              value={formData.nombre}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               placeholder="Tu nombre"
               className="w-full border border-gray-300 rounded px-4 py-2"

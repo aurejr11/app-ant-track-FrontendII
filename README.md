@@ -244,3 +244,9 @@ El proyecto utiliza el sistema de breakpoints de Tailwind CSS:
 | Desktop    | `lg:`   | 1024px       |
 | XL         | `xl:`   | 1280px       |
 
+
+## base datos jsonserver
+
+EL proyecto por ahora trabajara con una base de datos levantada en el mismo poryecto pero 
+en diferente terminal.
+para iniciar el backend en: npm run api, en otra terminal
