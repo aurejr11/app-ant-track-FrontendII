@@ -1,0 +1,76 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "test@demo.com",
+      "password": "123456",
+      "name": "Usuario Demo"
+    },
+    {
+      "email": "test2@demo.com",
+      "password": "12322456",
+      "name": "Usuarioww Test",
+      "id": "M7IrAeZi2bs"
+    },
+    {
+      "name": "santiago",
+      "email": "s@gmail.com",
+      "password": "1111",
+      "id": "vrNoTuWcsBU"
+    },
+    {
+      "name": "maricela",
+      "email": "m@mail.com",
+      "password": "maricela",
+      "id": "Rpa54TwGqPs"
+    }
+  ],
+  "gastos": [
+    {
+      "id": "1",
+      "description": "Supermercado",
+      "amount": 125.5,
+      "category": "Alimentación",
+      "date": "2026-04-15",
+      "userId": 1
+    },
+    {
+      "id": "2",
+      "description": "Gasolina",
+      "amount": 45.3,
+      "category": "Transporte",
+      "date": "2026-04-18",
+      "userId": 1
+    },
+    {
+      "id": "3",
+      "description": "Cine",
+      "amount": 22,
+      "category": "Ocio",
+      "date": "2026-04-19",
+      "userId": "M7IrAeZi2bs"
+    },
+    {
+      "description": "cine",
+      "amount": 100,
+      "category": "entretenimiento",
+      "date": "2026-04-21",
+      "id": "EyET_etB4dY"
+    },
+    {
+      "description": "cosita",
+      "amount": 89,
+      "category": "alimentacion",
+      "date": "2026-04-21",
+      "id": "lfHwJmh9_rU"
+    },
+    {
+      "description": "pelicula",
+      "amount": 200,
+      "category": "salud",
+      "date": "2026-04-22",
+      "id": "Nnu-CBEHE3w"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

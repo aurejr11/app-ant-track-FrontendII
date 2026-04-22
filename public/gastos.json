@@ -1,0 +1,72 @@
+[
+    {
+      "id": "101",
+      "userId": "1",
+      "monto": "150.00",
+      "concepto": "Almuerzo ejecutivo",
+      "categoria": "Alimentación"
+    },
+    {
+      "id": "102",
+      "userId": "1",
+      "monto": "45.50",
+      "concepto": "Transporte oficina",
+      "categoria": "Transporte"
+    },
+    {
+      "id": "103",
+      "userId": "2",
+      "monto": "210.00",
+      "concepto": "Suscripción plataforma",
+      "categoria": "Servicios"
+    },
+    {
+      "id": "104",
+      "userId": "2",
+      "monto": "80.00",
+      "concepto": "Papelería y oficina",
+      "categoria": "Suministros"
+    },
+    {
+      "id": "105",
+      "userId": "3",
+      "monto": "350.00",
+      "concepto": "Mantenimiento equipo",
+      "categoria": "Tecnología"
+    },
+    {
+      "id": "106",
+      "userId": "3",
+      "monto": "120.00",
+      "concepto": "Cena de negocios",
+      "categoria": "Alimentación"
+    },
+    {
+      "id": "107",
+      "userId": "4",
+      "monto": "60.00",
+      "concepto": "Envío de muestras",
+      "categoria": "Logística"
+    },
+    {
+      "id": "108",
+      "userId": "4",
+      "monto": "500.00",
+      "concepto": "Publicidad redes sociales",
+      "categoria": "Marketing"
+    },
+    {
+      "id": "109",
+      "userId": "5",
+      "monto": "95.00",
+      "concepto": "Seguro mensual",
+      "categoria": "Seguros"
+    },
+    {
+      "id": "110",
+      "userId": "5",
+      "monto": "30.00",
+      "concepto": "Parqueadero",
+      "categoria": "Transporte"
+    }
+  ]
