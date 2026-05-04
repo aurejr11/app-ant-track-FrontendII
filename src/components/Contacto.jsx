@@ -1,12 +1,23 @@
 import React, { useState } from 'react'
+import Swal from 'sweetalert2';
 
 const Contacto = () => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
+
+        Swal.fire({
+            title:'Eniviando...',
+            text: 'Por favor espera un momento',
+            allowOutsideClick: false,
+            didOpen: ()=>{
+                Swal.showLoading()
+            }
+        })
         const formData = new FormData(event.target);
         formData.append("access_key", "4a1d600c-03c9-48d5-8ac0-fa69354ff586");
 
+        try{
         const response = await fetch("https://api.web3forms.com/submit", {
             method: "POST",
             body: formData
@@ -15,13 +26,29 @@ const Contacto = () => {
         const data = await response.json();
         
         if (data.success) {
-            console.log("Mensaje enviado con éxito");
+           Swal.fire({
+                    title: '¡Éxito!',
+                    text: 'Tu mensaje ha sido enviado correctamente',
+                    icon: 'success',
+                    confirmButtonColor: '#2563eb'
+                });
             event.target.reset();
         } else {
-            console.log("Hubo un error, intenta de nuevo");
+            Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al enviar el mensaje',
+                    icon: 'error'
+                });
+            }
+        }catch(error){
+        
+            Swal.fire({
+                title: 'Error de conexión',
+                text: 'No se pudo contactar con el servidor',
+                icon: 'error'
+            });
         }
     };
-
     return (
         <div className='text-center p-6 py-20 lg:px-32 w-full overflow-hidden bg-blue-50' id='Contacto'>
             <h1 className='text-2xl sm:text-4xl font-bold mb-2 text-center'>Contacta <span className='underline underline-offset-4 decoration-1 under font-light'>con nosotros</span></h1>
