@@ -16,7 +16,7 @@ const Header = () => {
                 <h3 className='max-w-xl mx-auto py-5 text-2xl sm:text-2xl md:text-[25px]'>AntTrack te ayuda a registrar, categorizar y analizar
                 tus gastos del dia a dia para que nunca pierdas el control de tu presupuesto. </h3>
              <div className='space-x-6 mt-16'>
-                   <a href="#login" className='border border-white text-[20px] px-8 py-3 rounded transition-all duration-300
+                   <a href="login" className='border border-white text-[20px] px-8 py-3 rounded transition-all duration-300
                     hover:bg-white hover:text-blue-600'>Comenzar gratis</a>
                      <a href="#Contacto" className='border border-white text-[20px] px-8 py-3 rounded transition-all duration-300
                     hover:bg-white hover:text-blue-600'>Contactanos</a>

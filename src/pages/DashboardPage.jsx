@@ -1,47 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { endPoints } from "../services/api";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // ✅ ya lo tenías
 import Swal from "sweetalert2";
 import { clearSession, getUser } from "../helpers/local-storage";
 
-
 export default function DashboardPage() {
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // ✅ ya lo tenías
 
-  //local storage
-  let activeUser= getUser("user");
+  // local storage
+  let activeUser = getUser("user");
 
-  //para confirmar 
-  console.log(activeUser)
-
+  console.log(activeUser);
 
   const [gasto, setGasto] = useState({
-
     description: "",
     amount: "",
     category: "",
-   
   });
 
   const [gastos, setGastos] = useState([]);
 
-  //promesa para traer gastos
-
-  function getGastos(){
+  function getGastos() {
     fetch(endPoints.gastos)
       .then((res) => res.json())
       .then((data) => setGastos(data))
       .catch((error) => console.log("Error al cargar gastos:", error.message));
   }
 
- 
   useEffect(() => {
     getGastos();
   }, []);
 
-  //logout
-
+  // logout
   const handleLogout = () => {
     Swal.fire({
       title: "¿Cerrar sesión?",
@@ -55,26 +46,22 @@ export default function DashboardPage() {
     }).then((result) => {
       if (result.isConfirmed) {
         clearSession('user');
-         navigate('/');
+        navigate('/');
       }
     });
   };
 
-  //traer datos en set gastos de todos los inputs
   const handleChange = (e) => {
     setGasto({ ...gasto, [e.target.name]: e.target.value });
   };
 
-  //post gastos
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //Convertir amount a número antes de enviar
     const gastoParaEnviar = {
       ...gasto,
       amount: parseFloat(gasto.amount),
-      date: new Date().toISOString().split('T')[0] // Añadir fecha automática
+      date: new Date().toISOString().split('T')[0]
     };
 
     try {
@@ -113,24 +100,28 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <h2 className="text-2xl font-bold mb-6">Panel de gastos</h2>
+
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">
           Bienvenido, {activeUser.name || 'Usuario'}
         </h2>
         <span className="text-gray-500 text-sm">{activeUser.email}</span>
       </div>
-      <button 
-          onClick={handleLogout}
-          className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
-          title="Cerrar sesión"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          <span className="hidden sm:inline">Salir</span>
+
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
+        title="Cerrar sesión"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span className="hidden sm:inline">Salir</span>
       </button>
 
-      <div className="bg-white p-6 rounded shadow-md max-w-md mb-8">
+      {/* Formulario */}
+      <div className="bg-white p-6 rounded shadow-md max-w-md mb-8 mt-6">
         <h3 className="text-lg font-semibold mb-4">Registrar nuevo gasto</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -183,6 +174,7 @@ export default function DashboardPage() {
         </form>
       </div>
 
+      {/* Historial */}
       <div className="bg-white p-6 rounded shadow-md max-w-md">
         <h3 className="text-lg font-semibold mb-4">Historial de gastos</h3>
         {gastos.length === 0 ? (
@@ -198,6 +190,21 @@ export default function DashboardPage() {
           </ul>
         )}
       </div>
+
+      {/* ✅ NUEVO — botón flotante para ir a estadísticas */}
+      <button
+        onClick={() => navigate("/estadisticas")}
+        className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
+        title="Ver estadísticas en gráficas"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        Ver estadísticas
+      </button>
+
     </div>
   );
 }
