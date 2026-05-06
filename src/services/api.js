@@ -7,6 +7,9 @@ export let endPoints = {
   users: URL_BASE + "/usuarios",
   gastos: URL_BASE + "/gastos",
   gastosByID: URL_BASE + "/gastos/usuarios",
+  comercios: URL_BASE + "/comercios",
+  categorias: URL_BASE + "/categorias",
+  metodoPago: URL_BASE + "/metodopagos",
   
 
   /*
