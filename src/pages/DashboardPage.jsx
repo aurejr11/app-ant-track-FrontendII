@@ -1,35 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { endPoints } from "../services/api";
-import { useNavigate } from 'react-router-dom'; // ✅ ya lo tenías
+import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 import { clearSession, getUser } from "../helpers/local-storage";
 
 export default function DashboardPage() {
 
-  const navigate = useNavigate(); // ✅ ya lo tenías
+  const navigate = useNavigate();
 
   // local storage
   let activeUser = getUser("user");
 
-  console.log(activeUser);
+  //para revisar que si 
+  console.log(activeUser.nombre);
 
   const [gasto, setGasto] = useState({
-    description: "",
-    amount: "",
-    category: "",
+    descripcion: "",
+    valor: "",
+    categoria: "",
+    metodoPago:"",
+    comercio:"",
+
+   
   });
 
+  // array para guasrada los gastos
   const [gastos, setGastos] = useState([]);
 
-  function getGastos() {
-    fetch(endPoints.gastos)
+  //gastos recibe un parametro id para listar al usuario activo
+  function getGastos(id) {
+    fetch(`${endPoints.gastosByID}/${id}`) //traemos los gastos del uasuario id
       .then((res) => res.json())
       .then((data) => setGastos(data))
       .catch((error) => console.log("Error al cargar gastos:", error.message));
   }
 
   useEffect(() => {
-    getGastos();
+    const idUser = activeUser.id;
+
+    //revisar que si llega el id
+    console.log(idUser)
+
+    //usamos la funcion fecth que recibe id cmo parametro
+    getGastos(idUser);
   }, []);
 
   // logout
@@ -60,8 +73,8 @@ export default function DashboardPage() {
 
     const gastoParaEnviar = {
       ...gasto,
-      amount: parseFloat(gasto.amount),
-      date: new Date().toISOString().split('T')[0]
+      valor: parseFloat(gasto.valor),
+      
     };
 
     try {
@@ -78,7 +91,8 @@ export default function DashboardPage() {
           text: "Tu gasto fue guardado correctamente.",
           confirmButtonColor: "#2563eb",
         });
-        setGasto({ description: "", amount: "", category: "" });
+        setGasto({ descripcion: "", valor: "", categoria: "", metodPago:"",
+          comercio:"" });
       } else {
         Swal.fire({
           icon: "error",
@@ -103,9 +117,9 @@ export default function DashboardPage() {
 
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">
-          Bienvenido, {activeUser.name || 'Usuario'}
+          Bienvenido, {activeUser.nombre || 'Usuario'}
         </h2>
-        <span className="text-gray-500 text-sm">{activeUser.email}</span>
+        <span className="text-gray-500 text-sm">{activeUser.correo}</span>
       </div>
 
       <button
@@ -128,8 +142,8 @@ export default function DashboardPage() {
             <label className="block text-gray-600 mb-1">Monto</label>
             <input
               type="number"
-              name="amount"
-              value={gasto.amount}
+              name="valor"
+              value={gasto.valor}
               onChange={handleChange}
               placeholder="0.00"
               className="w-full border border-gray-300 rounded px-4 py-2"
@@ -140,8 +154,8 @@ export default function DashboardPage() {
             <label className="block text-gray-600 mb-1">Concepto</label>
             <input
               type="text"
-              name="description"
-              value={gasto.description}
+              name="descripcion"
+              value={gasto.descripcion}
               onChange={handleChange}
               placeholder="Ej: café, transporte..."
               className="w-full border border-gray-300 rounded px-4 py-2"
@@ -151,13 +165,15 @@ export default function DashboardPage() {
           <div className="mb-6">
             <label className="block text-gray-600 mb-1">Categoría</label>
             <select
-              name="category"
-              value={gasto.category}
+              name="categoria"
+              value={gasto.categoria}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-4 py-2"
               required
             >
               <option value="">Selecciona una categoría</option>
+
+             {/* esta debe tarer lo que este en categorias */}
               <option value="alimentacion">Alimentación</option>
               <option value="transporte">Transporte</option>
               <option value="entretenimiento">Entretenimiento</option>
@@ -183,8 +199,11 @@ export default function DashboardPage() {
           <ul>
             {gastos.map((g) => (
               <li key={g.id} className="border-b py-2 flex justify-between">
-                <span>{g.description}</span>
-                <span className="font-semibold">${g.amount}</span>
+                <span>{g.descripcion}</span>
+                <span>{g.categoria.nombre}</span>
+                <span>{g.metodoPago.descripcion}</span>
+                <span>{g.comercio.nombreComercio}</span>
+                <span className="font-semibold">${g.valor}</span>
               </li>
             ))}
           </ul>

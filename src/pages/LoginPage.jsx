@@ -10,7 +10,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const [users, setUser] = useState([]);
-  const [email, setEmail] = useState("");
+  const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
 
   function getUser(){
@@ -28,7 +28,7 @@ useEffect(()=>{
   console.log(users)
 
  function findUser(){
-    let auth = users.find((u) => email == u.email && password == u.password)
+    let auth = users.find((u) => correo == u.correo )  // password == u.password para despues
     return auth
 
 }
@@ -41,7 +41,7 @@ useEffect(()=>{
       let userLogin= findUser();
 
       //validaciones en el log
-      console.log(userLogin.name)
+      console.log(userLogin.nombre)
 
       if (userLogin) {
         
@@ -89,8 +89,8 @@ useEffect(()=>{
             <input
               type="email"
               name="email"
-              value={email}
-              onChange={(e)=> setEmail(e.target.value)}
+              value={correo}
+              onChange={(e)=> setCorreo(e.target.value)}
               placeholder="tucorreo@email.com"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required

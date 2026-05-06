@@ -4,16 +4,59 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell, ResponsiveContainer, Legend,
 } from "recharts";
+import { clearSession, getUser } from "../helpers/local-storage";
+import { endPoints } from "../services/api";
 
 const COLORS = ["#2563eb", "#16a34a", "#dc2626", "#d97706", "#7c3aed", "#0891b2"];
 
 export default function EstadisticasPage() {
+
+   // local storage
+  let activeUser = getUser("user");
   const navigate = useNavigate();
+
+  const [gasto, setGasto] = useState({
+      descripcion: "",
+      valor: "",
+      categoria: "",
+      metodoPago:"",
+      comercio:"",
+  
+     
+    });
+  
+    // array para guasrada los gastos
+    const [gastos, setGastos] = useState([]);
+  
+    //gastos recibe un parametro id para listar al usuario activo
+    function getGastos(id) {
+      fetch(`${endPoints.gastosByID}/${id}`) //traemos los gastos del uasuario id
+        .then((res) => res.json())
+        .then((data) => setGastos(data))
+        .catch((error) => console.log("Error al cargar gastos:", error.message));
+    }
+  
+    useEffect(() => {
+      const idUser = activeUser.id;
+  
+      //revisar que si llega el id
+      console.log(idUser)
+  
+      //usamos la funcion fecth que recibe id cmo parametro
+      getGastos(idUser);
+    }, []);
+
+    //evaluo que si tenga los gastos
+   console.log(gastos) 
+
   const [statsCategorias, setStatsCategorias] = useState([]);
   const [statsMetodos,    setStatsMetodos]    = useState([]);
   const [statsMeses,      setStatsMeses]      = useState([]);
   const [totalGastado,    setTotalGastado]    = useState(0);
   const [loading,         setLoading]         = useState(true);
+
+
+  
 
   useEffect(() => {
 
