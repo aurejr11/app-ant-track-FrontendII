@@ -8,34 +8,71 @@ export default function DashboardPage() {
 
   const navigate = useNavigate();
 
-  // local storage
+  // local storage para recibir usuario
   let activeUser = getUser("user");
 
   //para revisar que si 
   console.log(activeUser.nombre);
 
+  //el DTO recobe estos parametros, el userID lo sacamos del localStorage
+
   const [gasto, setGasto] = useState({
     descripcion: "",
     valor: "",
-    categoria: "",
-    metodoPago:"",
-    comercio:"",
-
-   
+    categoriaId: "",
+    metodoPagoId: "",
+    comercioId: "",
+    usuarioId: activeUser.id,
   });
 
-  // array para guasrada los gastos
+  // array para guasrada los gastos, categorias, comercios, metodos de pago
   const [gastos, setGastos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [comercios, setComercios] = useState([]);
+  const [metodoPagos, setMetodoPagos] = useState([]);
 
-  //gastos recibe un parametro id para listar al usuario activo
+  //PARA LISTAR GASTOS recibe un parametro id para listar al usuario activo
   function getGastos(id) {
     fetch(`${endPoints.gastosByID}/${id}`) //traemos los gastos del uasuario id
       .then((res) => res.json())
-      .then((data) => setGastos(data))
+      .then((data) => {
+        console.table(data); //verificar si llega la data
+        setGastos(data)})
+      .catch((error) => console.log("Error al cargar gastos:", error.message));
+  }
+
+  //PARA LISTAR coemrcios
+  function getComercios() {
+    fetch(`${endPoints.comercios}`) //traemos los gastos del uasuario id
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("comercios",data); //verificar si llega la data
+        setComercios(data)})
+      .catch((error) => console.log("Error al cargar gastos:", error.message));
+  }
+
+  //PARA LISTAR categorias
+  function getCategorias() {
+    fetch(`${endPoints.categorias}`) //traemos los gastos del uasuario id
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("categorias",data); //verificar si llega la data
+        setCategorias(data)})
+      .catch((error) => console.log("Error al cargar gastos:", error.message));
+  }
+
+  //PARA LISTAR metod de pago
+  function getMetodoPagos() {
+    fetch(`${endPoints.metodoPago}`) //traemos los gastos del uasuario id
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("metodopago",data); //verificar si llega la data
+        setMetodoPagos(data)})
       .catch((error) => console.log("Error al cargar gastos:", error.message));
   }
 
   useEffect(() => {
+
     const idUser = activeUser.id;
 
     //revisar que si llega el id
@@ -43,9 +80,12 @@ export default function DashboardPage() {
 
     //usamos la funcion fecth que recibe id cmo parametro
     getGastos(idUser);
+    getCategorias();
+    getComercios();
+    getMetodoPagos();
   }, []);
 
-  // logout
+  // FUNCION LOGOUT
   const handleLogout = () => {
     Swal.fire({
       title: "¿Cerrar sesión?",
@@ -64,16 +104,24 @@ export default function DashboardPage() {
     });
   };
 
-  const handleChange = (e) => {
-    setGasto({ ...gasto, [e.target.name]: e.target.value });
-  };
+  //ESTA FUNCION NSO CAMPURA TODOS LOS DATOS Y LOS SETTEA DIRECTAMENTE 
 
-  const handleSubmit = async (e) => {
+ const handleChange = (e) => {   
+    setGasto({ ...gasto, [e.target.name]: e.target.value });
+  }; //todos los datos ya quedan para usar el gasto
+
+ //aca enviamos todo 
+
+const handleSubmit = async (e) => {
     e.preventDefault();
 
     const gastoParaEnviar = {
       ...gasto,
       valor: parseFloat(gasto.valor),
+      categoriaId: parseInt(gasto.categoriaId),
+      metodoPagoId: parseInt(gasto.metodoPagoId),
+      comercioId: parseInt(gasto.comercioId),
+      usuarioId: activeUser.id,
       
     };
 
@@ -91,8 +139,8 @@ export default function DashboardPage() {
           text: "Tu gasto fue guardado correctamente.",
           confirmButtonColor: "#2563eb",
         });
-        setGasto({ descripcion: "", valor: "", categoria: "", metodPago:"",
-          comercio:"" });
+        setGasto({ descripcion: "", valor: "", categoriaId: "", metodPagoId:"",
+          comercioId:"" });
       } else {
         Swal.fire({
           icon: "error",
@@ -165,22 +213,65 @@ export default function DashboardPage() {
           <div className="mb-6">
             <label className="block text-gray-600 mb-1">Categoría</label>
             <select
-              name="categoria"
-              value={gasto.categoria}
+              name="categoriaId"
+              value={gasto.categoriaId}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-4 py-2"
               required
             >
               <option value="">Selecciona una categoría</option>
 
-             {/* esta debe tarer lo que este en categorias */}
-              <option value="alimentacion">Alimentación</option>
-              <option value="transporte">Transporte</option>
-              <option value="entretenimiento">Entretenimiento</option>
-              <option value="salud">Salud</option>
-              <option value="otros">Otros</option>
+             {/* esta debe tarer lo que este en categorias pordriamos traer la categorias
+             de la api */}
+
+             {categorias.map((item)=>( 
+                <option key={item.id} value={item.id}>
+                {item.nombre}
+              </option>))}
+              
             </select>
           </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-600 mb-1">Comercio</label>
+            <select
+              name="comercioId"
+              value={gasto.comercioId}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-4 py-2"
+              required
+            >
+              <option value="">Selecciona un comercios registrado</option>
+
+             {/* esta debe tarer lo que este en categorias pordriamos traer la categorias
+             de la api */}
+              {comercios.map((item)=>( 
+                <option key={item.id} value={item.id}>
+                {item.nombreComercio}
+              </option>))}
+            </select>
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-600 mb-1">Metodo pago</label>
+            <select
+              name="metodoPagoId"
+              value={gasto.metodoPagoId}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-4 py-2"
+              required
+            >
+              <option value="">Selecciona un metod de pago</option>
+
+             {/* esta debe tarer lo que este en categorias pordriamos traer la categorias
+             de la api */}
+              {metodoPagos.map((item)=>( 
+                <option key={item.id} value={item.id}>
+                {item.formaPago}
+              </option>))}
+            </select>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
