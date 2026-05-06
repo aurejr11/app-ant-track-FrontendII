@@ -1,12 +1,12 @@
 //servidor levantado en otra temrinal dento de la app-ant-track
 
-const URL_BASE = "http://localhost:3001/";
+const URL_BASE = "http://localhost:8080/anttrackapi/v1";
 
 export let endPoints = {
 
-  users: URL_BASE + "users/",
-  gastos: URL_BASE + "gastos/",
-
+  users: URL_BASE + "/usuarios",
+  gastos: URL_BASE + "/gastos",
+  gastosByID: URL_BASE + "/gastos/usuarios",
   
 
   /*
