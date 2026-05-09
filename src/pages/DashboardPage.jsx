@@ -139,6 +139,9 @@ const handleSubmit = async (e) => {
           text: "Tu gasto fue guardado correctamente.",
           confirmButtonColor: "#2563eb",
         });
+
+        getGastos(activeUser.id);
+
         setGasto({ descripcion: "", valor: "", categoriaId: "", metodPagoId:"",
           comercioId:"" });
       } else {
@@ -160,9 +163,16 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <h2 className="text-2xl font-bold mb-6">Panel de gastos</h2>
-
+    <div className="min-h-screen bg-gray-50">
+    <div className="max-w-5xl mx-auto">
+       <div className="flex flex-col items-center mb-6">
+         <h2 className="text-2xl font-bold mb-6 p-6">PANEL DE GASTOS</h2>
+           <img
+            src="/antt.png"
+            alt="AntTrack logo"
+            className="w-20 mx-auto mb-4 invert"
+          />
+        </div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">
           Bienvenido, {activeUser.nombre || 'Usuario'}
@@ -183,7 +193,7 @@ const handleSubmit = async (e) => {
       </button>
 
       {/* Formulario */}
-      <div className="bg-white p-6 rounded shadow-md max-w-md mb-8 mt-6">
+      <div className="bg-white p-6 rounded shadow-md w-full mb-8 mt-6">
         <h3 className="text-lg font-semibold mb-4">Registrar nuevo gasto</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -216,7 +226,7 @@ const handleSubmit = async (e) => {
               name="categoriaId"
               value={gasto.categoriaId}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-4 py-2"
+              className="w-full border border-gray-300 rounded px-4 py-2  text-gray-600"
               required
             >
               <option value="">Selecciona una categoría</option>
@@ -238,7 +248,7 @@ const handleSubmit = async (e) => {
               name="comercioId"
               value={gasto.comercioId}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-4 py-2"
+              className="w-full border border-gray-300 rounded px-4 py-2  text-gray-600"
               required
             >
               <option value="">Selecciona un comercios registrado</option>
@@ -258,7 +268,7 @@ const handleSubmit = async (e) => {
               name="metodoPagoId"
               value={gasto.metodoPagoId}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-4 py-2"
+              className="w-full border border-gray-300 rounded px-4 py-2  text-gray-600"
               required
             >
               <option value="">Selecciona un metod de pago</option>
@@ -280,31 +290,45 @@ const handleSubmit = async (e) => {
           </button>
         </form>
       </div>
-
-      {/* Historial */}
-      <div className="bg-white p-6 rounded shadow-md max-w-md">
-        <h3 className="text-lg font-semibold mb-4">Historial de gastos</h3>
-        {gastos.length === 0 ? (
-          <p className="text-gray-400">No hay gastos registrados aún.</p>
-        ) : (
-          <ul>
-            {gastos.map((g) => (
-              <li key={g.id} className="border-b py-2 flex justify-between">
-                <span>{g.descripcion}</span>
-                <span>{g.categoria.nombre}</span>
-                <span>{g.metodoPago.descripcion}</span>
-                <span>{g.comercio.nombreComercio}</span>
-                <span className="font-semibold">${g.valor}</span>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
+    
+      {/* Historial */}
+<div className="bg-white p-6 rounded shadow-md w-full">
+  <h3 className="text-lg font-semibold mb-4">Historial de gastos</h3>
+  {gastos.length === 0 ? (
+    <p className="text-gray-400">No hay gastos registrados aún.</p>
+  ) : (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm text-left">
+        <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+          <tr>
+            <th className="px-4 py-2">Descripción</th>
+            <th className="px-4 py-2">Categoría</th>
+            <th className="px-4 py-2">Método de pago</th>
+            <th className="px-4 py-2">Comercio</th>
+            <th className="px-4 py-2 text-right">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {gastos.map((g) => (
+            <tr key={g.id} className="border-b hover:bg-gray-50">
+              <td className="px-4 py-2">{g.descripcion}</td>
+              <td className="px-4 py-2">{g.categoria.nombre}</td>
+              <td className="px-4 py-2">{g.metodoPago.descripcion}</td>
+              <td className="px-4 py-2">{g.comercio.nombreComercio}</td>
+              <td className="px-4 py-2 text-right font-semibold">${g.valor}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</div>
       {/* ✅ NUEVO — botón flotante para ir a estadísticas */}
       <button
         onClick={() => navigate("/estadisticas")}
-        className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
+        className="fixed top-11 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
         title="Ver estadísticas en gráficas"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"

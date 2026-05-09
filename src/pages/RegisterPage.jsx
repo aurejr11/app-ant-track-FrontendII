@@ -180,30 +180,37 @@ export default function RegisterPage() {
               required
             />
           </div>
+
           <div className="mb-4">
+            <label className="block text-gray-600 mb-1">Tipo Doc</label>
+              <select
+                name="tipoDocumento"
+                value={tipoDocumento}
+                onChange={(e) => setTipoDocumento(e.target.value)}
+                className="w-full border border-gray-300 rounded px-4 py-2 bg-white text-gray-600"
+                required
+               >
+                <option value="CEDULA">Cédula</option>
+                <option value="">Selecciona un tipo</option>
+                <option value="TARJETA_IDENTIDAD">Tarjeta de Identidad</option>
+                <option value="PASAPORTE">Pasaporte</option>
+                <option value="EXTRANJERIA">Extranjería</option>
+              </select>
+            </div>
+
+            <div className="mb-4">
             <label className="block text-gray-600 mb-1">Documento</label>
             <input
               type="text"
               name="documento"
               value={documento}
               onChange={(e)=>setDocumento(e.target.value)}
-              placeholder="Tu nombre"
+              placeholder="Numero de documento"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-600 mb-1">Tipo Doc</label>
-            <input
-              type="text"
-              name="tipoDocumento"
-              value={tipoDocumento}
-              onChange={(e)=>setTipoDocumento(e.target.value)}
-              placeholder="CEDULA, TARJETA_IDENTIDAD,PASAPORTE,EXTRANJERIA"
-              className="w-full border border-gray-300 rounded px-4 py-2"
-              required
-            />
-          </div>
+
           <div className="mb-4">
             <label className="block text-gray-600 mb-1">Edad</label>
             <input
@@ -216,18 +223,20 @@ export default function RegisterPage() {
               required
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-600 mb-1">Genero</label>
-            <input
-              type="text"
-              name="genero"
-              value={genero}
-              onChange={(e)=>setGenero(e.target.value)}
-              placeholder="M o F"
-              className="w-full border border-gray-300 rounded px-4 py-2"
-              required
-            />
-          </div>
+        <div className="mb-4">
+         <label className="block text-gray-600 mb-1">Género</label>
+          <select
+            name="genero"
+            value={genero}
+            onChange={(e) => setGenero(e.target.value)}
+            className="w-full border border-gray-300 rounded px-4 py-2 bg-white  text-gray-600"
+            required
+            >
+              <option value="">Selecciona un género</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+          </select>
+        </div>
           <div className="mb-4">
             <label className="block text-gray-600 mb-1">Contacto</label>
             <input
