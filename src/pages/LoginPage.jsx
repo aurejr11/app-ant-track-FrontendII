@@ -49,27 +49,41 @@ useEffect(()=>{
         //local sotarge
         saveUser(userLogin);
         
-        Swal.fire({
-          icon: "success",
-          title: "¡Bienvenido!",
-          text: "Sesión iniciada correctamente.",
-          confirmButtonColor: "#2563eb",
-        }).then(() => navigate("/dashboard"));
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Credenciales incorrectas",
-          text: "El email o la contraseña son incorrectos.",
-          confirmButtonColor: "#2563eb",
-        });
-      }
-    } catch (error) {
-      console.error(error)
       Swal.fire({
-        icon: "error",
-        title: "Sin conexión",
-        text: "No se pudo conectar con el servidor.",
-        confirmButtonColor: "#2563eb",
+       icon: "success",
+       title: "¡Bienvenido!",
+       text: "Sesión iniciada correctamente.",
+       confirmButtonColor: "#2563eb",
+        }).then(() => {
+
+  // VALIDACIÓN ADMIN
+
+  if (userLogin.rol === "ADMIN") {
+
+    navigate("/admin");
+
+  } else {
+
+    navigate("/dashboard");
+
+  }
+
+      });
+         } else {
+             Swal.fire({
+              icon: "error",
+              title: "Credenciales incorrectas",
+              text: "El email o la contraseña son incorrectos.",
+              confirmButtonColor: "#2563eb",
+      });
+         }
+          } catch (error) {
+            console.error(error)
+            Swal.fire({
+             icon: "error",
+             title: "Sin conexión",
+             text: "No se pudo conectar con el servidor.",
+             confirmButtonColor: "#2563eb",
       });
     }
   };
