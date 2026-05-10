@@ -41,7 +41,7 @@ useEffect(()=>{
       let userLogin= findUser();
 
       //validaciones en el log
-      console.log(userLogin.nombre)
+      
 
       if (userLogin) {
         

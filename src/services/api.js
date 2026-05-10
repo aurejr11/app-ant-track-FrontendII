@@ -1,6 +1,6 @@
 //servidor levantado en otra temrinal dento de la app-ant-track
 
-const URL_BASE = "http://localhost:8080/anttrackapi/v1";
+const URL_BASE = "http://18.188.98.240:8080/anttrackapi/v1";
 
 export let endPoints = {
 
@@ -12,11 +12,12 @@ export let endPoints = {
   metodoPago: URL_BASE + "/metodopagos",
   
 
-  /*
+ 
   auth: {
-    login: `${BASE_URL}/auth/login`,
-    register: `${BASE_URL}/auth/register`,
+    login: URL_BASE +"/auth/login",
+    register: URL_BASE +"/auth/register",
   },
+   /*
   gastos: {
     listar: `${BASE_URL}/gastos`,
     crear: `${BASE_URL}/gastos`,
