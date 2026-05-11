@@ -147,6 +147,7 @@ export default function RegisterPage() {
             // Limpiar formulari
              
     }
+     
     setFormData({ nombre: "",
       documento: "",
       tipoDocumento:"",
@@ -190,11 +191,11 @@ export default function RegisterPage() {
                 className="w-full border border-gray-300 rounded px-4 py-2 bg-white text-gray-600"
                 required
                >
-                <option value="CEDULA">Cédula</option>
                 <option value="">Selecciona un tipo</option>
-                <option value="TARJETA_IDENTIDAD">Tarjeta de Identidad</option>
-                <option value="PASAPORTE">Pasaporte</option>
-                <option value="EXTRANJERIA">Extranjería</option>
+                <option value="CEDULA">CEDULA</option>
+                <option value="TARJETA_IDENTIDAD">TARJETA DE IDENTIDAD</option>
+                <option value="PASAPORTE">PASAPORTE</option>
+                <option value="EXTRANJERIA">CEDULA EXTRANJERIA</option>
               </select>
             </div>
 
