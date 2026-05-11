@@ -1,6 +1,6 @@
 //servidor levantado en otra temrinal dento de la app-ant-track
 
-const URL_BASE = "http://18.188.98.240:8080/anttrackapi/v1";
+const URL_BASE = "http://localhost:8080/anttrackapi/v1";
 
 export let endPoints = {
 
@@ -16,6 +16,14 @@ export let endPoints = {
   auth: {
     login: URL_BASE +"/auth/login",
     register: URL_BASE +"/auth/register",
+  },
+  // ── Reportes / Estadísticas ──────────────────────
+  reportes: {
+    porCategoria:  (id, mes, anio) => `${URL_BASE}/reportes/usuario/${id}/por-categoria?mes=${mes}&anio=${anio}`,
+    resumen:       (id, mes, anio) => `${URL_BASE}/reportes/usuario/${id}/resumen?mes=${mes}&anio=${anio}`,
+    porMes:        (id, anio)      => `${URL_BASE}/reportes/usuario/${id}/por-mes?anio=${anio}`,
+    porMetodoPago: (id, mes, anio) => `${URL_BASE}/reportes/usuario/${id}/por-metodo-pago?mes=${mes}&anio=${anio}`,
+    topComercios:  (id, mes, anio) => `${URL_BASE}/reportes/usuario/${id}/top-comercios?mes=${mes}&anio=${anio}`,
   },
    /*
   gastos: {

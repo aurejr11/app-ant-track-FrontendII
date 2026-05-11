@@ -110,6 +110,18 @@ export default function DashboardPage() {
     setGasto({ ...gasto, [e.target.name]: e.target.value });
   }; //todos los datos ya quedan para usar el gasto
 
+  //funcione spara edita y eliminar
+function handleEliminar(id) {
+    fetch(`${endPoints.gastos}/${id}`, {
+        method: "DELETE"
+    }).then(() => getGastos(activeUser.id));
+}
+
+function handleEditar(id) {
+    // redirige o abre modal con el id
+    console.log("editar gasto:");
+}
+
  //aca enviamos todo 
 
 const handleSubmit = async (e) => {
@@ -318,6 +330,10 @@ const handleSubmit = async (e) => {
               <td className="px-4 py-2">{g.metodoPago.descripcion}</td>
               <td className="px-4 py-2">{g.comercio.nombreComercio}</td>
               <td className="px-4 py-2 text-right font-semibold">${g.valor}</td>
+              <td className="px-4 py-2">
+                  <button onClick={() => handleEditar(g.id)}>Editar</button>
+                  <button onClick={() => handleEliminar(g.id)}>Eliminar</button>
+              </td>
             </tr>
           ))}
         </tbody>

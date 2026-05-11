@@ -4,126 +4,103 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   PieChart, Pie, Cell, ResponsiveContainer, Legend,
 } from "recharts";
-import { clearSession, getUser } from "../helpers/local-storage";
+import { getUser } from "../helpers/local-storage";
 import { endPoints } from "../services/api";
 
 const COLORS = ["#2563eb", "#16a34a", "#dc2626", "#d97706", "#7c3aed", "#0891b2"];
 
 export default function EstadisticasPage() {
-
-   // local storage
-  let activeUser = getUser("user");
+  const activeUser = getUser("user");
   const navigate = useNavigate();
 
-  const [gasto, setGasto] = useState({
-      descripcion: "",
-      valor: "",
-      categoria: "",
-      metodoPago:"",
-      comercio:"",
-  
-     
-    });
-  
-    // array para guasrada los gastos
-    const [gastos, setGastos] = useState([]);
-  
-    //gastos recibe un parametro id para listar al usuario activo
-    function getGastos(id) {
-      fetch(`${endPoints.gastosByID}/${id}`) //traemos los gastos del uasuario id
-        .then((res) => res.json())
-        .then((data) => setGastos(data))
-        .catch((error) => console.log("Error al cargar gastos:", error.message));
-    }
-  
-    useEffect(() => {
-      const idUser = activeUser.id;
-  
-      //revisar que si llega el id
-      console.log(idUser)
-  
-      //usamos la funcion fecth que recibe id cmo parametro
-      getGastos(idUser);
-    }, []);
+  // ── Selector de mes y año ──────────────────────
+  const hoy = new Date();
+  const [mes, setMes]   = useState(hoy.getMonth() + 1);
+  const [anio, setAnio] = useState(hoy.getFullYear());
 
-    //evaluo que si tenga los gastos
-   console.log(gastos) 
-
+  // ── Estados de datos ───────────────────────────
+  const [resumen,       setResumen]       = useState(null);
   const [statsCategorias, setStatsCategorias] = useState([]);
   const [statsMetodos,    setStatsMetodos]    = useState([]);
   const [statsMeses,      setStatsMeses]      = useState([]);
-  const [totalGastado,    setTotalGastado]    = useState(0);
+  const [topComercios,    setTopComercios]    = useState([]);
   const [loading,         setLoading]         = useState(true);
+  const [error,           setError]           = useState(null);
 
-
-  
-
+  // ── Carga de datos reales ──────────────────────
+  console.log("activeUser completo:", activeUser);
+console.log("id del usuario:", activeUser?.id);
   useEffect(() => {
+    const cargarDatos = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const id = activeUser.id;
 
-    // DATOS quemados — para probar sin Spring
-    //descomento el bloque de fetch de abajo cuando este listo el back
-    const categorias = [
-      { name: "Alimentación",    value: 165000 },
-      { name: "Transporte",      value: 107000 },
-      { name: "Entretenimiento", value: 87000  },
-      { name: "Salud",           value: 68000  },
-      { name: "Otros",           value: 58000  },
-    ];
+        const [resumenRes, catRes, mesRes, metodosRes, comerciosRes] =
+          await Promise.all([
+            fetch(endPoints.reportes.resumen(id, mes, anio)),
+            fetch(endPoints.reportes.porCategoria(id, mes, anio)),
+            fetch(endPoints.reportes.porMes(id, anio)),
+            fetch(endPoints.reportes.porMetodoPago(id, mes, anio)),
+            fetch(endPoints.reportes.topComercios(id, mes, anio)),
+          ]);
 
-    const metodos = [
-      { name: "Tarjeta",  value: 219000 },
-      { name: "Efectivo", value: 146000 },
-      { name: "Nequi",    value: 121000 },
-    ];
+          console.log("resumen status:",    resumenRes.status);
+console.log("categorias status:", catRes.status);
+console.log("meses status:",      mesRes.status);
+console.log("metodos status:",    metodosRes.status);
+console.log("comercios status:",  comerciosRes.status);
 
-    const meses = [
-      { name: "Enero",   total: 65000  },
-      { name: "Febrero", total: 82000  },
-      { name: "Marzo",   total: 110000 },
-      { name: "Abril",   total: 95000  },
-      { name: "Mayo",    total: 135000 },
-    ];
+        // Verificamos que todas las respuestas sean ok
+     //   if (!resumenRes.ok || !catRes.ok || !mesRes.ok || !metodosRes.ok || !comerciosRes.ok) {
+       //   throw new Error("Error en la respuesta del servidor");
+        //}
 
-    setStatsCategorias(categorias);
-    setStatsMetodos(metodos);
-    setStatsMeses(meses);
-    setTotalGastado(categorias.reduce((acc, c) => acc + c.value, 0));
-    setLoading(false);
+        const [resumenData, catData, mesData, metodosData, comerciosData] =
+          await Promise.all([
+            resumenRes.json(),
+            catRes.json(),
+            mesRes.json(),
+            metodosRes.json(),
+            comerciosRes.json(),
+          ]);
 
-    // ─────────────────────────────────────────────────
-    // DATOS REALES — descomentar cuando Spring esté listo
-    // ─────────────────────────────────────────────────
-    // const cargar = async () => {
-    //   try {
-    //     const [gastosRes, catRes, metRes, mesRes] = await Promise.all([
-    //       fetch(endPoints.gastos),
-    //       fetch(endPoints.statsCategorias),
-    //       fetch(endPoints.statsMetodosPago),
-    //       fetch(endPoints.statsMeses),
-    //     ]);
-    //     const gastos = await gastosRes.json();
-    //     setTotalGastado(gastos.reduce((acc, g) => acc + g.valor, 0));
-    //     const cats = await catRes.json();
-    //     setStatsCategorias(cats.map(c => ({ name: c.categoria, value: c.total })));
-    //     const mets = await metRes.json();
-    //     setStatsMetodos(mets.map(m => ({ name: m.metodoPago, value: m.total })));
-    //     const meses = await mesRes.json();
-    //     setStatsMeses(meses.map(m => ({ name: m.mes, total: m.total })));
-    //   } catch (err) {
-    //     console.error("Error cargando estadísticas:", err);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // cargar();
+        setResumen(resumenData);
+        setStatsCategorias(catData);   // { nombreCategoria, gastoReal, porcentajeDelTotal }
+        setStatsMeses(mesData);        // { mes, totalGastado }
+        setStatsMetodos(metodosData);  // { nombreMetodoPago, totalGastado }
+        setTopComercios(comerciosData);// { nombreComercio, totalGastado }
 
-  }, []);
+        console.log("resumen es array:",    Array.isArray(resumenData));
+console.log("categorias es array:", Array.isArray(catData));
+console.log("meses es array:",      Array.isArray(mesData));
+console.log("metodos es array:",    Array.isArray(metodosData));
+console.log("comercios es array:",  Array.isArray(comerciosData));
+
+console.log(mesData);
+      } catch (err) {
+        console.error("Error exacto:", err.message, err);
+        setError(`Error: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (activeUser?.id) cargarDatos();
+  }, [mes, anio]); // se recarga al cambiar mes o año
+
+  // ── Nombres de meses para el selector ─────────
+  const nombresMeses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-3xl font-bold text-gray-800">Estadísticas</h2>
           <p className="text-gray-500 mt-1">Vista gráfica de tus gastos</p>
@@ -140,116 +117,167 @@ export default function EstadisticasPage() {
         </button>
       </div>
 
-      {loading ? (
+      {/* Selector de mes y año */}
+      <div className="flex gap-4 mb-8">
+        <select
+          value={mes}
+          onChange={e => setMes(Number(e.target.value))}
+          className="bg-white border border-gray-300 rounded-lg px-4 py-2 text-gray-700 shadow-sm"
+        >
+          {nombresMeses.map((nombre, i) => (
+            <option key={i + 1} value={i + 1}>{nombre}</option>
+          ))}
+        </select>
+        <input
+          type="number"
+          value={anio}
+          onChange={e => setAnio(Number(e.target.value))}
+          min="2020"
+          max="2030"
+          className="bg-white border border-gray-300 rounded-lg px-4 py-2 text-gray-700 shadow-sm w-28"
+        />
+      </div>
+
+      {/* Estados de carga y error */}
+      {loading && (
         <div className="flex items-center justify-center h-64">
           <p className="text-gray-400 text-lg">Cargando estadísticas...</p>
         </div>
-      ) : (
+      )}
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-4 mb-6">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && (
         <>
           {/* Tarjetas resumen */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500">
-              <p className="text-gray-500 text-sm">Total gastado</p>
-              <p className="text-2xl font-bold text-blue-600">
-                ${totalGastado.toLocaleString()}
-              </p>
+          {resumen && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white rounded-xl shadow p-5 border-l-4 border-blue-500">
+                <p className="text-gray-500 text-sm">Total gastado</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  ${resumen.totalGastado?.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow p-5 border-l-4 border-green-500">
+                <p className="text-gray-500 text-sm">Presupuesto</p>
+                <p className="text-2xl font-bold text-green-600">
+                  ${resumen.presupuesto?.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow p-5 border-l-4 border-purple-500">
+                <p className="text-gray-500 text-sm">Disponible</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  ${resumen.disponible?.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow p-5 border-l-4 border-yellow-500">
+                <p className="text-gray-500 text-sm">Presupuesto usado</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {resumen.porcentajeUsado?.toFixed(1)}%
+                </p>
+              </div>
             </div>
-            <div className="bg-white rounded-xl shadow p-5 border-l-4 border-green-500">
-              <p className="text-gray-500 text-sm">Categorías</p>
-              <p className="text-2xl font-bold text-green-600">
-                {statsCategorias.length}
-              </p>
-            </div>
-            <div className="bg-white rounded-xl shadow p-5 border-l-4 border-purple-500">
-              <p className="text-gray-500 text-sm">Métodos de pago</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {statsMetodos.length}
-              </p>
-            </div>
-          </div>
+          )}
 
           {/* Barras: gastos por mes */}
           <div className="bg-white rounded-xl shadow p-6 mb-8">
-            <h3 className="text-lg font-semibold mb-4 text-gray-700">
-              Gastos por mes
-            </h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-700">Gastos por mes — {anio}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={statsMeses}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="mes" />
                 <YAxis tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-                <Tooltip
-                  formatter={(v) => [`$${v.toLocaleString()}`, "Total"]}
-                />
-                <Bar
-                  dataKey="total"
-                  name="Total"
-                  fill="#2563eb"
-                  radius={[4, 4, 0, 0]}
-                />
+                <Tooltip formatter={(v) => [`$${v.toLocaleString()}`, "Total"]} />
+                <Bar dataKey="totalGastado" name="Total" fill="#2563eb" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Tortas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Tortas + Top comercios */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
             {/* Por categoría */}
             <div className="bg-white rounded-xl shadow p-6">
-              <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                Por categoría
-              </h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
-                  <Pie
-                    data={statsCategorias}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
-                  >
-                    {statsCategorias.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(v) => `$${v.toLocaleString()}`} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              <h3 className="text-lg font-semibold mb-4 text-gray-700">Por categoría</h3>
+              {statsCategorias.length === 0
+                ? <p className="text-gray-400 text-center py-10">Sin gastos este mes</p>
+                : (
+                  <ResponsiveContainer width="100%" height={280}>
+                    <PieChart>
+                      <Pie
+                        data={statsCategorias}
+                        dataKey="gastoReal"
+                        nameKey="nombreCategoria"
+                        cx="50%" cy="50%"
+                        outerRadius={100}
+                        label={({ nombreCategoria, porcentajeDelTotal }) =>
+                          `${nombreCategoria} ${porcentajeDelTotal}%`
+                        }
+                      >
+                        {statsCategorias.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(v) => `$${v.toLocaleString()}`} />
+                      <Legend formatter={(value, entry) => entry.payload.nombreCategoria} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )
+              }
             </div>
 
             {/* Por método de pago */}
             <div className="bg-white rounded-xl shadow p-6">
-              <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                Por método de pago
-              </h3>
-              <ResponsiveContainer width="100%" height={280}>
-                <PieChart>
-                  <Pie
-                    data={statsMetodos}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
-                  >
-                    {statsMetodos.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(v) => `$${v.toLocaleString()}`} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              <h3 className="text-lg font-semibold mb-4 text-gray-700">Por método de pago</h3>
+              {statsMetodos.length === 0
+                ? <p className="text-gray-400 text-center py-10">Sin gastos este mes</p>
+                : (
+                  <ResponsiveContainer width="100%" height={280}>
+                    <PieChart>
+                      <Pie
+                        data={statsMetodos}
+                        dataKey="totalGastado"
+                        nameKey="nombreMetodoPago"
+                        cx="50%" cy="50%"
+                        outerRadius={100}
+                        label={({ nombreMetodoPago, percent }) =>
+                          `${nombreMetodoPago} ${(percent * 100).toFixed(0)}%`
+                        }
+                      >
+                        {statsMetodos.map((_, i) => (
+                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(v) => `$${v.toLocaleString()}`} />
+                      <Legend formatter={(value, entry) => entry.payload.nombreMetodoPago} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )
+              }
             </div>
+          </div>
 
+          {/* Top comercios */}
+          <div className="bg-white rounded-xl shadow p-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-700">Top 5 comercios</h3>
+            {topComercios.length === 0
+              ? <p className="text-gray-400 text-center py-10">Sin datos este mes</p>
+              : (
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={topComercios} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+                    <YAxis type="category" dataKey="nombreComercio" width={120} />
+                    <Tooltip formatter={(v) => [`$${v.toLocaleString()}`, "Total"]} />
+                    <Bar dataKey="totalGastado" fill="#7c3aed" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )
+            }
           </div>
         </>
       )}
