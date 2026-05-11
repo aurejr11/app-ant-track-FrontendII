@@ -273,7 +273,7 @@ const handleSubmit = async (e) => {
             >
               <option value="">Selecciona un metod de pago</option>
 
-             {/* esta debe tarer lo que este en categorias pordriamos traer la categorias
+             {/* esta debe tarer lo que este en meroso de pago
              de la api */}
               {metodoPagos.map((item)=>( 
                 <option key={item.id} value={item.id}>
