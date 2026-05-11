@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const[password,setPassword]=useState("")
   const[telefono,setTelefono]=useState("")
   const[presupMensual,setPresupMensual]=useState("")
+  const[direccion,setDireccion]=useState("")
 
   //este ultimo e spara guardar todo lo anterior
   const[users,setUsers]=useState([])
@@ -50,6 +51,7 @@ export default function RegisterPage() {
       correo: correo,
       password: password,
       telefono: telefono,
+      direccion: direccion,
       presupMensual:presupMensual,
     }
     //ya creado el user, lo mandamos con una peticion post
@@ -156,6 +158,7 @@ export default function RegisterPage() {
       correo: "",
       password: "",
       telefono:"",
+      direccion:"",
       presupMensual:"" }); }
   
 
@@ -239,13 +242,25 @@ export default function RegisterPage() {
           </select>
         </div>
           <div className="mb-4">
-            <label className="block text-gray-600 mb-1">Contacto</label>
+            <label className="block text-gray-600 mb-1">Telefono</label>
             <input
               type="text"
               name="contacto"
               value={telefono}
               onChange={(e)=>setTelefono(e.target.value)}
               placeholder="321000000"
+              className="w-full border border-gray-300 rounded px-4 py-2"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-600 mb-1">Direccion</label>
+            <input
+              type="text"
+              name="contacto"
+              value={direccion}
+              onChange={(e)=>setDireccion(e.target.value)}
+              placeholder="crr 50 45 20, medellin"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required
             />

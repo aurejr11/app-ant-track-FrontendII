@@ -116,8 +116,8 @@ export default function CategoriasA() {
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const res = await fetch(`${endPoints.categorias}/${id}/desactivar`, {
-          method: "PUT",
+        const res = await fetch(`${endPoints.categorias}/${id}`, {
+          method: "DELETE",
         });
 
         if (res.ok) {
