@@ -13,7 +13,7 @@ export default function CategoriasA() {
     nombre: "",
     descripcion: "",
     presupuestoMaximoMensual: "",
-    gastoMensual: "",
+    
   });
 
   // ── GET ──────────────────────────────────────────
@@ -41,7 +41,7 @@ export default function CategoriasA() {
       nombre: form.nombre,
       descripcion: form.descripcion,
       presupuestoMaximoMensual: parseFloat(form.presupuestoMaximoMensual),
-      gastoMensual: parseFloat(form.gastoMensual),
+      
     };
 
     try {
@@ -76,7 +76,7 @@ export default function CategoriasA() {
       nombre: form.nombre,
       descripcion: form.descripcion,
       presupuestoMaximoMensual: parseFloat(form.presupuestoMaximoMensual),
-      gastoMensual: parseFloat(form.gastoMensual),
+      
     };
 
     try {
@@ -116,8 +116,8 @@ export default function CategoriasA() {
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const res = await fetch(`${endPoints.categorias}/${id}`, {
-          method: "DELETE",
+        const res = await fetch(`${endPoints.categorias}/${id}/desactivar`, {
+          method: "PUT",
         });
 
         if (res.ok) {
@@ -170,7 +170,7 @@ export default function CategoriasA() {
       nombre: cat.nombre,
       descripcion: cat.descripcion,
       presupuestoMaximoMensual: cat.presupuestoMaximoMensual,
-      gastoMensual: cat.gastoMensual,
+      
     });
   }
 
@@ -181,7 +181,7 @@ export default function CategoriasA() {
       nombre: "",
       descripcion: "",
       presupuestoMaximoMensual: "",
-      gastoMensual: "",
+      
     });
   }
 
@@ -247,19 +247,7 @@ export default function CategoriasA() {
                 />
               </div>
 
-              <div>
-                <label className="block text-gray-600 mb-1">Gasto mensual actual</label>
-                <input
-                  type="number"
-                  name="gastoMensual"
-                  value={form.gastoMensual}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                  className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
-                  required
-                />
-              </div>
-
+             
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -297,7 +285,6 @@ export default function CategoriasA() {
                     <th className="px-4 py-2">Nombre</th>
                     <th className="px-4 py-2">Descripción</th>
                     <th className="px-4 py-2">Presup. máx.</th>
-                    <th className="px-4 py-2">Gasto mensual</th>
                     <th className="px-4 py-2">Estado</th>
                     <th className="px-4 py-2 text-center">Acciones</th>
                   </tr>
@@ -309,7 +296,6 @@ export default function CategoriasA() {
                       <td className="px-4 py-2 font-medium">{cat.nombre}</td>
                       <td className="px-4 py-2 text-gray-500">{cat.descripcion}</td>
                       <td className="px-4 py-2">${cat.presupuestoMaximoMensual}</td>
-                      <td className="px-4 py-2">${cat.gastoMensual}</td>
                       <td className="px-4 py-2">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           cat.estado === "ACTIVO"
