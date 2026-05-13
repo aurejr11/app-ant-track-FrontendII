@@ -331,8 +331,8 @@ const handleSubmit = async (e) => {
               <td className="px-4 py-2">{g.comercio.nombreComercio}</td>
               <td className="px-4 py-2 text-right font-semibold">${g.valor}</td>
               <td className="px-4 py-2">
-                  <button onClick={() => handleEditar(g.id)}>Editar</button>
-                  <button onClick={() => handleEliminar(g.id)}>Eliminar</button>
+                 {/* <button onClick={() => handleEditar(g.id)}>Editar</button>
+                  <button onClick={() => handleEliminar(g.id)}>Eliminar</button>*/}
               </td>
             </tr>
           ))}

@@ -19,7 +19,7 @@ const Footer = () => {
                 <a href="#About" className='hover:text-white'>Ant Track</a>
                 <a href="#Contacto" className='hover:text-white'>Contactanos</a>
                 <a href="#" className='hover:text-white'>Politica de privacidad</a>
-            </ul>x
+            </ul>
         </div>
         <div className='w-full md:w-1/3'>
             <h3 className='text-white text-lg font-bold mb-4'>Siguenos</h3>

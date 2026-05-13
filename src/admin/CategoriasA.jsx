@@ -13,7 +13,6 @@ export default function CategoriasA() {
     nombre: "",
     descripcion: "",
     presupuestoMaximoMensual: "",
-    
   });
 
   // ── GET ──────────────────────────────────────────
@@ -41,7 +40,6 @@ export default function CategoriasA() {
       nombre: form.nombre,
       descripcion: form.descripcion,
       presupuestoMaximoMensual: parseFloat(form.presupuestoMaximoMensual),
-      
     };
 
     try {
@@ -76,7 +74,6 @@ export default function CategoriasA() {
       nombre: form.nombre,
       descripcion: form.descripcion,
       presupuestoMaximoMensual: parseFloat(form.presupuestoMaximoMensual),
-      
     };
 
     try {
@@ -170,7 +167,6 @@ export default function CategoriasA() {
       nombre: cat.nombre,
       descripcion: cat.descripcion,
       presupuestoMaximoMensual: cat.presupuestoMaximoMensual,
-      
     });
   }
 
@@ -181,23 +177,48 @@ export default function CategoriasA() {
       nombre: "",
       descripcion: "",
       presupuestoMaximoMensual: "",
-      
     });
   }
+
+  // ── LOGOUT TOTAL A LANDING ───────────────────────
+  const handleSalirLanding = () => {
+    Swal.fire({
+      title: "¿Deseas salir al inicio?",
+      text: "Se cerrará la sesión de administrador",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/");
+      }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto p-8">
 
-        {/* Header */}
+        {/* Header modificado con los dos botones */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Categorías</h1>
-          <button
-            onClick={() => navigate("/admin")}
-            className="text-sm text-gray-500 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded-lg"
-          >
-            ← Volver al admin
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate("/admin")}
+              className="text-sm text-gray-500 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded-lg transition-colors"
+            >
+              ← Volver al menú
+            </button>
+            <button
+              onClick={handleSalirLanding}
+              className="text-sm bg-gray-800 text-white hover:bg-black px-4 py-2 rounded-lg shadow-sm transition-colors"
+            >
+              Salir al Inicio
+            </button>
+          </div>
         </div>
 
         {/* Formulario */}
@@ -208,7 +229,6 @@ export default function CategoriasA() {
 
           <form onSubmit={editando ? handleEditar : handleCrear}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
               <div>
                 <label className="block text-gray-600 mb-1">Nombre</label>
                 <input
@@ -221,7 +241,6 @@ export default function CategoriasA() {
                   required
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 mb-1">Descripción</label>
                 <input
@@ -233,7 +252,6 @@ export default function CategoriasA() {
                   className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 mb-1">Presupuesto máximo mensual</label>
                 <input
@@ -246,8 +264,6 @@ export default function CategoriasA() {
                   required
                 />
               </div>
-
-             
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -257,7 +273,6 @@ export default function CategoriasA() {
               >
                 {editando ? "Guardar cambios" : "Crear categoría"}
               </button>
-
               {editando && (
                 <button
                   type="button"
@@ -335,7 +350,6 @@ export default function CategoriasA() {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
