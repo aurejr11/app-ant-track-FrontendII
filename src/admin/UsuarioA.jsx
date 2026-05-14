@@ -13,9 +13,12 @@ export default function UsuariosA() {
     nombre: "",
     tipoDocumento: "",
     documento: "",
+    edad: "",
+    genero: "",
     direccion: "",
     telefono: "",
-    correo: "", // Añadido para coincidir con el backend
+    correo: "",
+    presupMensual: "",
   });
 
   // ── GET ──────────────────────────────────────────
@@ -38,11 +41,17 @@ export default function UsuariosA() {
   // ── POST ─────────────────────────────────────────
   async function handleCrear(e) {
     e.preventDefault();
+
+    const nuevoUsuario = {
+      ...form,
+      presupMensual: parseFloat(form.presupMensual),
+    };
+
     try {
       const res = await fetch(endPoints.users, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(nuevoUsuario),
       });
 
       if (res.ok) {
@@ -65,11 +74,17 @@ export default function UsuariosA() {
   // ── PUT EDITAR ───────────────────────────────────
   async function handleEditar(e) {
     e.preventDefault();
+
+    const usuarioEditado = {
+      ...form,
+      presupMensual: parseFloat(form.presupMensual),
+    };
+
     try {
       const res = await fetch(`${endPoints.users}/${editando.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(usuarioEditado),
       });
 
       if (res.ok) {
@@ -152,26 +167,34 @@ export default function UsuariosA() {
   // ── CARGAR DATOS EN FORM PARA EDITAR ─────────────
   function cargarEdicion(user) {
     setEditando(user);
+
     setForm({
       nombre: user.nombre || "",
       tipoDocumento: user.tipoDocumento || "",
       documento: user.documento || "",
+      edad: user.edad || "",
+      genero: user.genero || "",
       direccion: user.direccion || "",
       telefono: user.telefono || "",
       correo: user.correo || "",
+      presupMensual: user.presupMensual || "",
     });
   }
 
   // ── LIMPIAR FORM ─────────────────────────────────
   function limpiarForm() {
     setEditando(null);
+
     setForm({
       nombre: "",
       tipoDocumento: "",
       documento: "",
+      edad: "",
+      genero: "",
       direccion: "",
       telefono: "",
       correo: "",
+      presupMensual: "",
     });
   }
 
@@ -193,10 +216,11 @@ export default function UsuariosA() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto p-8">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Usuarios</h1>
+
           <div className="flex gap-3">
             <button
               onClick={() => navigate("/admin")}
@@ -204,6 +228,7 @@ export default function UsuariosA() {
             >
               ← Volver al menú
             </button>
+
             <button
               onClick={handleSalirLanding}
               className="text-sm bg-gray-800 text-white hover:bg-black px-4 py-2 rounded-lg"
@@ -216,28 +241,41 @@ export default function UsuariosA() {
         {/* Formulario */}
         <div className="bg-white p-6 rounded shadow-md w-full mb-8">
           <h3 className="text-lg font-semibold mb-4">
-            {editando ? `Editando: ${editando.nombre}` : "Registrar nuevo usuario"}
+            {editando
+              ? `Editando: ${editando.nombre}`
+              : "Registrar nuevo usuario"}
           </h3>
 
           <form onSubmit={editando ? handleEditar : handleCrear}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Nombre Completo - Solo lectura en edición */}
+
+              {/* Nombre */}
               <div className="md:col-span-2">
-                <label className="block text-gray-600 mb-1 text-sm">Nombre Completo</label>
+                <label className="block text-gray-600 mb-1 text-sm">
+                  Nombre Completo
+                </label>
+
                 <input
                   type="text"
                   name="nombre"
                   value={form.nombre}
                   onChange={handleChange}
                   readOnly={!!editando}
-                  className={`w-full border border-gray-300 rounded px-4 py-2 ${editando ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                  className={`w-full border border-gray-300 rounded px-4 py-2 ${
+                    editando
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }`}
                   required
                 />
               </div>
 
-              {/* Tipo Identificación - Solo lectura en edición */}
+              {/* Tipo Documento */}
               <div>
-                <label className="block text-gray-600 mb-1 text-sm">Tipo Identificación</label>
+                <label className="block text-gray-600 mb-1 text-sm">
+                  Tipo Identificación
+                </label>
+
                 {editando ? (
                   <input
                     type="text"
@@ -255,30 +293,89 @@ export default function UsuariosA() {
                   >
                     <option value="">Seleccione un tipo</option>
                     <option value="CEDULA">CEDULA</option>
-                    <option value="TARJETA DE IDENTIDAD">TARJETA DE IDENTIDAD</option>
+                    <option value="TARJETA DE IDENTIDAD">
+                      TARJETA DE IDENTIDAD
+                    </option>
                     <option value="PASAPORTE">PASAPORTE</option>
-                    <option value="CEDULA DE EXTRANJERIA">CEDULA DE EXTRANJERIA</option>
+                    <option value="CEDULA DE EXTRANJERIA">
+                      CEDULA DE EXTRANJERIA
+                    </option>
                   </select>
                 )}
               </div>
 
-              {/* Número - Solo lectura en edición */}
+              {/* Documento */}
               <div>
-                <label className="block text-gray-600 mb-1 text-sm">Número documento</label>
+                <label className="block text-gray-600 mb-1 text-sm">
+                  Número documento
+                </label>
+
                 <input
                   type="text"
                   name="documento"
                   value={form.documento}
                   onChange={handleChange}
                   readOnly={!!editando}
-                  className={`w-full border border-gray-300 rounded px-4 py-2 ${editando ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                  className={`w-full border border-gray-300 rounded px-4 py-2 ${
+                    editando
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }`}
                   required
                 />
               </div>
 
-              {/* Dirección - Editable */}
+              {/* Edad */}
               <div>
-                <label className="block text-gray-600 mb-1 text-sm font-bold text-blue-600">Dirección</label>
+                <label className="block text-gray-600 mb-1 text-sm">
+                  Edad
+                </label>
+
+                <input
+                  type="number"
+                  name="edad"
+                  value={form.edad}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                />
+              </div>
+
+              {/* Género */}
+              <div>
+                <label className="block text-gray-600 mb-1 text-sm">
+                  Género
+                </label>
+
+                <input
+                  type="text"
+                  name="genero"
+                  value={form.genero}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                />
+              </div>
+
+              {/* Presupuesto */}
+              <div>
+                <label className="block text-gray-600 mb-1 text-sm">
+                  Presupuesto mensual
+                </label>
+
+                <input
+                  type="number"
+                  name="presupMensual"
+                  value={form.presupMensual}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                />
+              </div>
+
+              {/* Dirección */}
+              <div>
+                <label className="block text-gray-600 mb-1 text-sm font-bold text-blue-600">
+                  Dirección
+                </label>
+
                 <input
                   type="text"
                   name="direccion"
@@ -288,9 +385,12 @@ export default function UsuariosA() {
                 />
               </div>
 
-              {/* Teléfono - Editable */}
+              {/* Teléfono */}
               <div>
-                <label className="block text-gray-600 mb-1 text-sm font-bold text-blue-600">Teléfono</label>
+                <label className="block text-gray-600 mb-1 text-sm font-bold text-blue-600">
+                  Teléfono
+                </label>
+
                 <input
                   type="text"
                   name="telefono"
@@ -300,9 +400,12 @@ export default function UsuariosA() {
                 />
               </div>
 
-              {/* Correo - Editable */}
+              {/* Correo */}
               <div>
-                <label className="block text-gray-600 mb-1 text-sm font-bold text-blue-600">Correo Electrónico</label>
+                <label className="block text-gray-600 mb-1 text-sm font-bold text-blue-600">
+                  Correo Electrónico
+                </label>
+
                 <input
                   type="email"
                   name="correo"
@@ -320,6 +423,7 @@ export default function UsuariosA() {
               >
                 {editando ? "Guardar cambios" : "Crear usuario"}
               </button>
+
               {editando && (
                 <button
                   type="button"
@@ -335,7 +439,10 @@ export default function UsuariosA() {
 
         {/* Tabla */}
         <div className="bg-white p-6 rounded shadow-md w-full">
-          <h3 className="text-lg font-semibold mb-4">Usuarios registrados</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Usuarios registrados
+          </h3>
+
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
@@ -343,30 +450,54 @@ export default function UsuariosA() {
                   <th className="px-4 py-2">Nombre</th>
                   <th className="px-4 py-2">Documento</th>
                   <th className="px-4 py-2">Contacto</th>
+                  <th className="px-4 py-2">Presupuesto</th>
                   <th className="px-4 py-2">Estado</th>
                   <th className="px-4 py-2 text-center">Acciones</th>
                 </tr>
               </thead>
+
               <tbody>
                 {usuarios.map((u) => (
-                  <tr key={u.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2 font-medium">{u.nombre}</td>
+                  <tr
+                    key={u.id}
+                    className="border-b hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-2 font-medium">
+                      {u.nombre}
+                    </td>
+
                     <td className="px-4 py-2 text-gray-600">
-                      <div className="text-xs text-gray-400">{u.tipoDocumento}</div>
+                      <div className="text-xs text-gray-400">
+                        {u.tipoDocumento}
+                      </div>
+
                       {u.documento}
                     </td>
+
                     <td className="px-4 py-2 text-gray-500">
                       <div className="font-bold">{u.telefono}</div>
                       <div className="text-xs">{u.correo}</div>
-                      <div className="text-xs italic">{u.direccion}</div>
+                      <div className="text-xs italic">
+                        {u.direccion}
+                      </div>
                     </td>
+
                     <td className="px-4 py-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        u.estado === "ACTIVO" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
-                      }`}>
+                      ${u.presupMensual}
+                    </td>
+
+                    <td className="px-4 py-2">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          u.estado === "ACTIVO"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-600"
+                        }`}
+                      >
                         {u.estado}
                       </span>
                     </td>
+
                     <td className="px-4 py-2 text-center flex gap-2 justify-center">
                       <button
                         onClick={() => cargarEdicion(u)}
@@ -374,6 +505,7 @@ export default function UsuariosA() {
                       >
                         Editar
                       </button>
+
                       {u.estado === "ACTIVO" ? (
                         <button
                           onClick={() => handleEliminar(u.id)}

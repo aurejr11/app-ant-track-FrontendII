@@ -25,7 +25,9 @@ export default function DashboardPage() {
     usuarioId: activeUser.id,
   });
 
-  // array para guasrada los gastos, categorias, comercios, metodos de pago
+
+
+  // array para guaradar los gastos, categorias, comercios, metodos de pago
   const [gastos, setGastos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [comercios, setComercios] = useState([]);
@@ -36,7 +38,7 @@ export default function DashboardPage() {
     fetch(`${endPoints.gastosByID}/${id}`) //traemos los gastos del uasuario id
       .then((res) => res.json())
       .then((data) => {
-        console.table(data); //verificar si llega la data
+        //console.log(data); //verificar si llega la data
         setGastos(data)})
       .catch((error) => console.log("Error al cargar gastos:", error.message));
   }
@@ -78,7 +80,7 @@ export default function DashboardPage() {
     //revisar que si llega el id
     console.log(idUser)
 
-    //usamos la funcion fecth que recibe id cmo parametro
+    //usamos la funcion fecth que recibe id como parametro
     getGastos(idUser);
     getCategorias();
     getComercios();
@@ -104,73 +106,161 @@ export default function DashboardPage() {
     });
   };
 
-  //ESTA FUNCION NSO CAMPURA TODOS LOS DATOS Y LOS SETTEA DIRECTAMENTE 
+  //ESTA FUNCION NOs CAMPURA TODOS LOS DATOS Y LOS SETTEA DIRECTAMENTE 
 
- const handleChange = (e) => {   
-    setGasto({ ...gasto, [e.target.name]: e.target.value });
-  }; //todos los datos ya quedan para usar el gasto
+  const handleChange = (e) => {
+    if(gastoEditar){
+        setGastoEditar({...gastoEditar, [e.target.name]: e.target.value});
+    } else {
+        setGasto({...gasto, [e.target.name]: e.target.value});
+    }
+};
 
   //funcione spara edita y eliminar
 function handleEliminar(id) {
-    fetch(`${endPoints.gastos}/${id}`, {
-        method: "DELETE"
-    }).then(() => getGastos(activeUser.id));
+
+   Swal.fire({
+        title: "¿Desactivar categoría?",
+        text: "La categoría quedará inactiva",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#dc2626",
+        cancelButtonColor: "#6b7280",
+        confirmButtonText: "Desactivar",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const res = await fetch(`${endPoints.gastos}/${id}`, {
+            method: "DELETE",
+          });
+  
+          if (res.ok) {
+            Swal.fire({
+              icon: "success",
+              title: "Gasto eliminado",
+              confirmButtonColor: "#2563eb",
+            }).then(() => getGastos(activeUser.id));
+          } else {
+            Swal.fire({ icon: "error", title: "Error al elimniar" });
+          }
+        }
+      });
+   
 }
 
+//para editar
+
+const [gastoEditar, setGastoEditar] = useState(null);
+
 function handleEditar(id) {
-    // redirige o abre modal con el id
-    console.log("editar gasto:");
-}
+    let gasto = gastos.find((g) => g.id === id);
+    setGastoEditar(gasto); // guarda el gasto en el estado
+   }
 
  //aca enviamos todo 
 
 const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const gastoParaEnviar = {
-      ...gasto,
-      valor: parseFloat(gasto.valor),
-      categoriaId: parseInt(gasto.categoriaId),
-      metodoPagoId: parseInt(gasto.metodoPagoId),
-      comercioId: parseInt(gasto.comercioId),
-      usuarioId: activeUser.id,
-      
+    if(gastoEditar){
+
+      const gastoParaEditar = {
+        descripcion: gastoEditar.descripcion,
+        valor: parseFloat(gastoEditar.valor),
+        categoriaId: gastoEditar.categoria?.id || parseInt(gastoEditar.categoriaId),
+        metodoPagoId: gastoEditar.metodoPago?.id || parseInt(gastoEditar.metodoPagoId),
+        comercioId: gastoEditar.comercio?.id || parseInt(gastoEditar.comercioId),
+        usuarioId: activeUser.id
     };
 
-    try {
-      const response = await fetch(endPoints.gastos, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(gastoParaEnviar),
-      });
-
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "¡Gasto registrado!",
-          text: "Tu gasto fue guardado correctamente.",
-          confirmButtonColor: "#2563eb",
+      try {
+        const response = await fetch(`${endPoints.gastos}/${gastoEditar.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(gastoParaEditar),
         });
+  
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "¡Gasto registrado!",
+            text: "Tu gasto fue guardado correctamente.",
+            confirmButtonColor: "#2563eb",
+          });
+  
+          getGastos(activeUser.id);
+  
+          setGasto({ descripcion: "", valor: "", categoriaId: "", metodoPagoId:"",
+             comercioId:"", usuarioId: activeUser.id });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo registrar el gasto.",
+            confirmButtonColor: "#2563eb",
+          });
+        }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Sin conexión",
+            text: "No se pudo conectar con el servidor.",
+            confirmButtonColor: "#2563eb",
+          });
+        }
 
-        getGastos(activeUser.id);
+        setGastoEditar(null);
 
-        setGasto({ descripcion: "", valor: "", categoriaId: "", metodPagoId:"",
-          comercioId:"" });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "No se pudo registrar el gasto.",
-          confirmButtonColor: "#2563eb",
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Sin conexión",
-        text: "No se pudo conectar con el servidor.",
-        confirmButtonColor: "#2563eb",
-      });
+
+
+    }else{
+
+        const gastoParaEnviar = {
+          ...gasto,
+          valor: parseFloat(gasto.valor),
+          descripcion: gasto.descripcion,
+          categoriaId: parseInt(gasto.categoriaId),
+          metodoPagoId: parseInt(gasto.metodoPagoId),
+          comercioId: parseInt(gasto.comercioId),
+          usuarioId: activeUser.id,
+          
+        };
+
+        try {
+          const response = await fetch(endPoints.gastos, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(gastoParaEnviar),
+          });
+
+          if (response.ok) {
+            Swal.fire({
+              icon: "success",
+              title: "¡Gasto registrado!",
+              text: "Tu gasto fue guardado correctamente.",
+              confirmButtonColor: "#2563eb",
+            });
+
+            getGastos(activeUser.id);
+
+            setGasto({ descripcion: "", valor: "", categoriaId: "", metodoPagoId:"",
+              comercioId:"", usuarioId: activeUser.id });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "No se pudo registrar el gasto.",
+              confirmButtonColor: "#2563eb",
+            });
+          }
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Sin conexión",
+              text: "No se pudo conectar con el servidor.",
+              confirmButtonColor: "#2563eb",
+            });
+          }
     }
   };
 
@@ -213,7 +303,7 @@ const handleSubmit = async (e) => {
             <input
               type="number"
               name="valor"
-              value={gasto.valor}
+              value={gastoEditar ? gastoEditar.valor : gasto.valor} //input con edit o entrada
               onChange={handleChange}
               placeholder="0.00"
               className="w-full border border-gray-300 rounded px-4 py-2"
@@ -225,7 +315,7 @@ const handleSubmit = async (e) => {
             <input
               type="text"
               name="descripcion"
-              value={gasto.descripcion}
+              value={gastoEditar ? gastoEditar.descripcion : gasto.descripcion}
               onChange={handleChange}
               placeholder="Ej: café, transporte..."
               className="w-full border border-gray-300 rounded px-4 py-2"
@@ -236,7 +326,7 @@ const handleSubmit = async (e) => {
             <label className="block text-gray-600 mb-1">Categoría</label>
             <select
               name="categoriaId"
-              value={gasto.categoriaId}
+              value={gastoEditar ? gastoEditar.categoria.id : gasto.categoriaId}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-4 py-2  text-gray-600"
               required
@@ -258,7 +348,7 @@ const handleSubmit = async (e) => {
             <label className="block text-gray-600 mb-1">Comercio</label>
             <select
               name="comercioId"
-              value={gasto.comercioId}
+              value={gastoEditar ? gastoEditar.comercio.id : gasto.comercioId}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-4 py-2  text-gray-600"
               required
@@ -278,7 +368,7 @@ const handleSubmit = async (e) => {
             <label className="block text-gray-600 mb-1">Metodo pago</label>
             <select
               name="metodoPagoId"
-              value={gasto.metodoPagoId}
+              value={gastoEditar ? gastoEditar.metodoPago.id : gasto.metodoPagoId}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-4 py-2  text-gray-600"
               required
@@ -331,8 +421,16 @@ const handleSubmit = async (e) => {
               <td className="px-4 py-2">{g.comercio.nombreComercio}</td>
               <td className="px-4 py-2 text-right font-semibold">${g.valor}</td>
               <td className="px-4 py-2">
-                 {/* <button onClick={() => handleEditar(g.id)}>Editar</button>
-                  <button onClick={() => handleEliminar(g.id)}>Eliminar</button>*/}
+
+                <td className="px-4 py-2 flex gap-2">
+                  <button onClick={() => handleEditar(g.id)}
+                     className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 
+                     rounded text-xs">Editar</button>
+                  <button onClick={() => handleEliminar(g.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded 
+                    text-xs">Eliminar</button>
+
+              </td>
               </td>
             </tr>
           ))}
