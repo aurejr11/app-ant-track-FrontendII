@@ -421,10 +421,16 @@ const handleSubmit = async (e) => {
               <td className="px-4 py-2">{g.comercio.nombreComercio}</td>
               <td className="px-4 py-2 text-right font-semibold">${g.valor}</td>
               <td className="px-4 py-2">
+
+                <td className="px-4 py-2 flex gap-2">
                   <button onClick={() => handleEditar(g.id)}
-                     className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs">Editar</button>
+                     className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 
+                     rounded text-xs">Editar</button>
                   <button onClick={() => handleEliminar(g.id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">Eliminar</button>
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded 
+                    text-xs">Eliminar</button>
+
+              </td>
               </td>
             </tr>
           ))}

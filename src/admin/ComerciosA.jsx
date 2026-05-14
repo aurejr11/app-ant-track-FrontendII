@@ -80,7 +80,6 @@ export default function ComerciosA() {
       telefono: form.telefono,
       direccion: form.direccion,
       horarioAtencion: form.horarioAtencion,
-     
     };
 
     try {
@@ -107,7 +106,7 @@ export default function ComerciosA() {
     }
   }
 
-  // ── PUT DESACTIVAR ───────────────────────────────
+  // ── PUT DESACTIVAR (Corregido para evitar error 500) ───────────
   function handleEliminar(id) {
     Swal.fire({
       title: "¿Desactivar comercio?",
@@ -120,8 +119,9 @@ export default function ComerciosA() {
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const res = await fetch(`${endPoints.comercios}/${id}`, {
-          method: "DELETE",
+        // Cambiamos el endpoint de DELETE a PUT /desactivar
+        const res = await fetch(`${endPoints.comercios}/${id}/desactivar`, {
+          method: "PUT",
         });
 
         if (res.ok) {
@@ -191,30 +191,57 @@ export default function ComerciosA() {
     });
   }
 
+  // ── LOGOUT TOTAL A LANDING ───────────────────────
+  const handleSalirLanding = () => {
+    Swal.fire({
+      title: "¿Deseas salir al inicio?",
+      text: "Se cerrará la sesión de administrador",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si usas localStorage, límpialo aquí
+        // localStorage.removeItem("token");
+        navigate("/");
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto p-8">
-
-        {/* Header */}
+        
+        {/* Header con dos botones de salida */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Comercios</h1>
-          <button
-            onClick={() => navigate("/admin")}
-            className="text-sm text-gray-500 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded-lg"
-          >
-            ← Volver al admin
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate("/admin")}
+              className="text-sm text-gray-500 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded-lg transition-colors"
+            >
+              ← Volver al menú
+            </button>
+            <button
+              onClick={handleSalirLanding}
+              className="text-sm bg-gray-800 text-white hover:bg-black px-4 py-2 rounded-lg shadow-sm transition-colors"
+            >
+              Salir al Inicio
+            </button>
+          </div>
         </div>
 
         {/* Formulario */}
         <div className="bg-white p-6 rounded shadow-md w-full mb-8">
           <h3 className="text-lg font-semibold mb-4">
-            {editando ? `Editando: ${editando.nombre}` : "Nuevo comercio"}
+            {editando ? `Editando: ${editando.nombreComercio}` : "Nuevo comercio"}
           </h3>
 
           <form onSubmit={editando ? handleEditar : handleCrear}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
               <div>
                 <label className="block text-gray-600 mb-1">Nombre Comercio</label>
                 <input
@@ -222,12 +249,11 @@ export default function ComerciosA() {
                   name="nombreComercio"
                   value={form.nombreComercio}
                   onChange={handleChange}
-                  placeholder="ej: Pull and Bear, il Forno, TecnoMac"
+                  placeholder="ej: Pull and Bear"
                   className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
                   required
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 mb-1">Nit</label>
                 <input
@@ -239,7 +265,6 @@ export default function ComerciosA() {
                   className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 mb-1">Teléfono</label>
                 <input
@@ -247,12 +272,10 @@ export default function ComerciosA() {
                   name="telefono"
                   value={form.telefono}
                   onChange={handleChange}
-                  placeholder="ej:3000000000"
                   className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
                   required
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 mb-1">Dirección</label>
                 <input
@@ -260,12 +283,10 @@ export default function ComerciosA() {
                   name="direccion"
                   value={form.direccion}
                   onChange={handleChange}
-                  placeholder="ej: Calle 123 #45-67"
                   className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
                   required
                 />
               </div>
-
               <div>
                 <label className="block text-gray-600 mb-1">Horario de Atención</label>
                 <input
@@ -273,12 +294,10 @@ export default function ComerciosA() {
                   name="horarioAtencion"
                   value={form.horarioAtencion}
                   onChange={handleChange}
-                  placeholder="ej: 9:00 AM - 6:00 PM"
                   className="w-full border border-gray-300 rounded px-4 py-2 text-gray-700"
                   required
                 />
               </div>
-
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -288,7 +307,6 @@ export default function ComerciosA() {
               >
                 {editando ? "Guardar cambios" : "Crear comercio"}
               </button>
-
               {editando && (
                 <button
                   type="button"
@@ -315,9 +333,6 @@ export default function ComerciosA() {
                     <th className="px-4 py-2">ID</th>
                     <th className="px-4 py-2">Nombre</th>
                     <th className="px-4 py-2">Nit</th>
-                    <th className="px-4 py-2">Teléfono</th>
-                    <th className="px-4 py-2">Dirección</th>
-                    <th className="px-4 py-2">Horario</th>
                     <th className="px-4 py-2">Estado</th>
                     <th className="px-4 py-2 text-center">Acciones</th>
                   </tr>
@@ -328,9 +343,6 @@ export default function ComerciosA() {
                       <td className="px-4 py-2">{comercio.id}</td>
                       <td className="px-4 py-2 font-medium">{comercio.nombreComercio}</td>
                       <td className="px-4 py-2 text-gray-500">{comercio.nit}</td>
-                      <td className="px-4 py-2">{comercio.telefono}</td>
-                      <td className="px-4 py-2">{comercio.direccion}</td>
-                      <td className="px-4 py-2">{comercio.horarioAtencion}</td>
                       <td className="px-4 py-2">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           comercio.estado === "ACTIVO"

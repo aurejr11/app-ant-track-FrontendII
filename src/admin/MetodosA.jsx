@@ -135,19 +135,45 @@ export default function MetodosA() {
     });
   }
 
+  // ── LOGOUT TOTAL A LANDING ───────────────────────
+  const handleSalirLanding = () => {
+    Swal.fire({
+      title: "¿Deseas salir al inicio?",
+      text: "Se cerrará la sesión de administrador",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate("/");
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto p-8">
 
-        {/* Header */}
+        {/* Header modificado con dos botones */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Métodos de Pago</h1>
-          <button
-            onClick={() => navigate("/admin")}
-            className="text-sm text-gray-500 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded-lg"
-          >
-            ← Volver al admin
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate("/admin")}
+              className="text-sm text-gray-500 hover:text-gray-800 border border-gray-300 px-4 py-2 rounded-lg transition-colors"
+            >
+              ← Volver al menú
+            </button>
+            <button
+              onClick={handleSalirLanding}
+              className="text-sm bg-gray-800 text-white hover:bg-black px-4 py-2 rounded-lg shadow-sm transition-colors"
+            >
+              Salir al Inicio
+            </button>
+          </div>
         </div>
 
         {/* Formulario */}
@@ -280,5 +306,3 @@ export default function MetodosA() {
     </div>
   );
 }
-
-
