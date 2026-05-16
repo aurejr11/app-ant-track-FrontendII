@@ -4,86 +4,73 @@ import { endPoints } from "../services/api";
 import { saveToken, saveUser } from "../helpers/local-storage";
 import Swal from "sweetalert2";
 
-
 export default function LoginPage() {
-
   const navigate = useNavigate();
 
   const [users, setUser] = useState([]);
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
 
-  function getUser(){
+  function getUser() {
     fetch(endPoints.users)
-    .then((response)=> response.json())
-    .then((data)=> setUser(data))
+      .then((response) => response.json())
+      .then((data) => setUser(data));
   }
 
-useEffect(()=>{
-    getUser()
-
-},[])
+  useEffect(() => {
+    getUser();
+  }, []);
 
   //PARA VERIFICaR QUE CARGuEN
-  console.log(users)
+  console.log(users);
 
- function findUser(){
-    let auth = users.find((u) => correo == u.correo )  // password == u.password para despues
-    return auth
+  function findUser() {
+    let auth = users.find((u) => correo == u.correo); // password == u.password para despues
+    return auth;
+  }
 
-}
-  
-  const handleSubmit =(e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     try {
-      
-      let userLogin= findUser();
+      let userLogin = findUser();
 
       //validaciones en el log
-      
 
       if (userLogin) {
-        
         //saveToken(data.token);
         //local sotarge
         saveUser(userLogin);
-        
-      Swal.fire({
-       icon: "success",
-       title: "¡Bienvenido!",
-       text: "Sesión iniciada correctamente.",
-       confirmButtonColor: "#2563eb",
+
+        Swal.fire({
+          icon: "success",
+          title: "¡Bienvenido!",
+          text: "Sesión iniciada correctamente.",
+          confirmButtonColor: "#2563eb",
         }).then(() => {
+          // VALIDACIÓN ADMIN
 
-  // VALIDACIÓN ADMIN
-
-  if (userLogin.rol === "ADMIN") {
-
-    navigate("/admin");
-
-  } else {
-
-    navigate("/dashboard");
-
-  }
-
-      });
-         } else {
-             Swal.fire({
-              icon: "error",
-              title: "Credenciales incorrectas",
-              text: "El email o la contraseña son incorrectos.",
-              confirmButtonColor: "#2563eb",
-      });
-         }
-          } catch (error) {
-            console.error(error)
-            Swal.fire({
-             icon: "error",
-             title: "Sin conexión",
-             text: "No se pudo conectar con el servidor.",
-             confirmButtonColor: "#2563eb",
+          if (userLogin.rol === "ADMIN") {
+            navigate("/admin");
+          } else {
+            navigate("/dashboard");
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Credenciales incorrectas",
+          text: "El email o la contraseña son incorrectos.",
+          confirmButtonColor: "#2563eb",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Sin conexión",
+        text: "No se pudo conectar con el servidor.",
+        confirmButtonColor: "#2563eb",
       });
     }
   };
@@ -104,7 +91,7 @@ useEffect(()=>{
               type="email"
               name="email"
               value={correo}
-              onChange={(e)=> setCorreo(e.target.value)}
+              onChange={(e) => setCorreo(e.target.value)}
               placeholder="tucorreo@email.com"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required
@@ -116,7 +103,7 @@ useEffect(()=>{
               type="password"
               name="password"
               value={password}
-              onChange={(e)=> setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="w-full border border-gray-300 rounded px-4 py-2"
               required

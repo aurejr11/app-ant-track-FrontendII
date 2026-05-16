@@ -3,8 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { endPoints } from "../services/api";
 import Swal from "sweetalert2";
 
-const FORMAS_PAGO = ["EFECTIVO", "TARJETA_CREDITO", "TARJETA_DEBITO", "NEQUI", "DAVIPLATA", "TRANSFERENCIA"];
-const FRANQUICIAS  = ["VISA", "MASTERCARD", "AMERICAN_EXPRESS", "OTRA"];
+const FORMAS_PAGO = [
+  "EFECTIVO",
+  "TARJETA_CREDITO",
+  "TARJETA_DEBITO",
+  "NEQUI",
+  "DAVIPLATA",
+  "TRANSFERENCIA",
+];
+const FRANQUICIAS = ["VISA", "MASTERCARD", "AMERICAN_EXPRESS", "OTRA"];
 
 export default function MetodosA() {
   const navigate = useNavigate();
@@ -13,8 +20,8 @@ export default function MetodosA() {
   const [editando, setEditando] = useState(null);
 
   const [form, setForm] = useState({
-    formaPago:   "",
-    franquicia:  "",
+    formaPago: "",
+    franquicia: "",
     descripcion: "",
   });
 
@@ -40,10 +47,10 @@ export default function MetodosA() {
     e.preventDefault();
 
     const nuevo = {
-      formaPago:   form.formaPago,
-      franquicia:  form.franquicia,
+      formaPago: form.formaPago,
+      franquicia: form.franquicia,
       descripcion: form.descripcion,
-      estado:      "ACTIVO",
+      estado: "ACTIVO",
     };
 
     try {
@@ -71,7 +78,11 @@ export default function MetodosA() {
         });
       }
     } catch (err) {
-      Swal.fire({ icon: "error", title: "Sin conexión con el servidor", text: err.message });
+      Swal.fire({
+        icon: "error",
+        title: "Sin conexión con el servidor",
+        text: err.message,
+      });
     }
   }
 
@@ -80,10 +91,10 @@ export default function MetodosA() {
     e.preventDefault();
 
     const actualizado = {
-      formaPago:   form.formaPago,
-      franquicia:  form.franquicia,
+      formaPago: form.formaPago,
+      franquicia: form.franquicia,
       descripcion: form.descripcion,
-      estado:      "ACTIVO",
+      estado: "ACTIVO",
     };
 
     try {
@@ -111,7 +122,11 @@ export default function MetodosA() {
         });
       }
     } catch (err) {
-      Swal.fire({ icon: "error", title: "Sin conexión con el servidor", text: err.message });
+      Swal.fire({
+        icon: "error",
+        title: "Sin conexión con el servidor",
+        text: err.message,
+      });
     }
   }
 
@@ -119,8 +134,8 @@ export default function MetodosA() {
   function cargarEdicion(metodo) {
     setEditando(metodo);
     setForm({
-      formaPago:   metodo.formaPago,
-      franquicia:  metodo.franquicia,
+      formaPago: metodo.formaPago,
+      franquicia: metodo.franquicia,
       descripcion: metodo.descripcion,
     });
   }
@@ -129,8 +144,8 @@ export default function MetodosA() {
   function limpiarForm() {
     setEditando(null);
     setForm({
-      formaPago:   "",
-      franquicia:  "",
+      formaPago: "",
+      franquicia: "",
       descripcion: "",
     });
   }
@@ -156,7 +171,6 @@ export default function MetodosA() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto p-8">
-
         {/* Header modificado con dos botones */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Métodos de Pago</h1>
@@ -179,15 +193,18 @@ export default function MetodosA() {
         {/* Formulario */}
         <div className="bg-white p-6 rounded shadow-md w-full mb-8">
           <h3 className="text-lg font-semibold mb-4">
-            {editando ? `Editando: ${editando.formaPago}` : "Nuevo método de pago"}
+            {editando
+              ? `Editando: ${editando.formaPago}`
+              : "Nuevo método de pago"}
           </h3>
 
           <form onSubmit={editando ? handleEditar : handleCrear}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
               {/* Forma de pago */}
               <div>
-                <label className="block text-gray-600 mb-1">Forma de pago</label>
+                <label className="block text-gray-600 mb-1">
+                  Forma de pago
+                </label>
                 <select
                   name="formaPago"
                   value={form.formaPago}
@@ -197,7 +214,9 @@ export default function MetodosA() {
                 >
                   <option value="">Selecciona una forma de pago</option>
                   {FORMAS_PAGO.map((fp) => (
-                    <option key={fp} value={fp}>{fp}</option>
+                    <option key={fp} value={fp}>
+                      {fp}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -214,7 +233,9 @@ export default function MetodosA() {
                 >
                   <option value="">Selecciona una franquicia</option>
                   {FRANQUICIAS.map((fr) => (
-                    <option key={fr} value={fr}>{fr}</option>
+                    <option key={fr} value={fr}>
+                      {fr}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -232,7 +253,6 @@ export default function MetodosA() {
                   required
                 />
               </div>
-
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -258,7 +278,9 @@ export default function MetodosA() {
 
         {/* Tabla */}
         <div className="bg-white p-6 rounded shadow-md w-full">
-          <h3 className="text-lg font-semibold mb-4">Métodos de pago registrados</h3>
+          <h3 className="text-lg font-semibold mb-4">
+            Métodos de pago registrados
+          </h3>
           {metodos.length === 0 ? (
             <p className="text-gray-400">No hay métodos de pago registrados.</p>
           ) : (
@@ -278,9 +300,13 @@ export default function MetodosA() {
                   {metodos.map((metodo) => (
                     <tr key={metodo.id} className="border-b hover:bg-gray-50">
                       <td className="px-4 py-2">{metodo.id}</td>
-                      <td className="px-4 py-2 font-medium">{metodo.formaPago}</td>
+                      <td className="px-4 py-2 font-medium">
+                        {metodo.formaPago}
+                      </td>
                       <td className="px-4 py-2">{metodo.franquicia}</td>
-                      <td className="px-4 py-2 text-gray-500">{metodo.descripcion}</td>
+                      <td className="px-4 py-2 text-gray-500">
+                        {metodo.descripcion}
+                      </td>
                       <td className="px-4 py-2">
                         <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                           ACTIVO
@@ -301,7 +327,6 @@ export default function MetodosA() {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

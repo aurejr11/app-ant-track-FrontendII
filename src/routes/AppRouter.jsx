@@ -14,21 +14,19 @@ import MetodosA from "../admin/MetodosA";
 import PagosA from "../admin/PagosA";
 
 const router = createBrowserRouter([
-  { path: "/",          element: <HomePage /> },
-  { path: "/login",     element: <LoginPage /> },
-  { path: "/register",  element: <RegisterPage /> },
+  { path: "/", element: <HomePage /> },
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <RegisterPage /> },
   { path: "/dashboard", element: <DashboardPage /> },
-  { path: "/estadisticas",  element: <EstadisticasPage /> },
-//Admin
+  { path: "/estadisticas", element: <EstadisticasPage /> },
+  //Admin
   { path: "/admin", element: <AdminPage /> },
   { path: "/admin/usuarios", element: <UsuarioA /> },
   { path: "/admin/comercios", element: <ComerciosA /> },
   { path: "/admin/categorias", element: <CategoriasA /> },
   { path: "/admin/metodos-pago", element: <MetodosA /> },
   { path: "/admin/pagos", element: <PagosA /> },
-
 ]);
-
 
 export default function AppRouter() {
   return <RouterProvider router={router} />;

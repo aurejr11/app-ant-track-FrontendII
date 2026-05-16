@@ -214,7 +214,6 @@ export default function ComerciosA() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto p-8">
-        
         {/* Header con dos botones de salida */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Comercios</h1>
@@ -237,13 +236,17 @@ export default function ComerciosA() {
         {/* Formulario */}
         <div className="bg-white p-6 rounded shadow-md w-full mb-8">
           <h3 className="text-lg font-semibold mb-4">
-            {editando ? `Editando: ${editando.nombreComercio}` : "Nuevo comercio"}
+            {editando
+              ? `Editando: ${editando.nombreComercio}`
+              : "Nuevo comercio"}
           </h3>
 
           <form onSubmit={editando ? handleEditar : handleCrear}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-600 mb-1">Nombre Comercio</label>
+                <label className="block text-gray-600 mb-1">
+                  Nombre Comercio
+                </label>
                 <input
                   type="text"
                   name="nombreComercio"
@@ -288,7 +291,9 @@ export default function ComerciosA() {
                 />
               </div>
               <div>
-                <label className="block text-gray-600 mb-1">Horario de Atención</label>
+                <label className="block text-gray-600 mb-1">
+                  Horario de Atención
+                </label>
                 <input
                   type="text"
                   name="horarioAtencion"
@@ -341,14 +346,20 @@ export default function ComerciosA() {
                   {comercios.map((comercio) => (
                     <tr key={comercio.id} className="border-b hover:bg-gray-50">
                       <td className="px-4 py-2">{comercio.id}</td>
-                      <td className="px-4 py-2 font-medium">{comercio.nombreComercio}</td>
-                      <td className="px-4 py-2 text-gray-500">{comercio.nit}</td>
+                      <td className="px-4 py-2 font-medium">
+                        {comercio.nombreComercio}
+                      </td>
+                      <td className="px-4 py-2 text-gray-500">
+                        {comercio.nit}
+                      </td>
                       <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          comercio.estado === "ACTIVO"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-600"
-                        }`}>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            comercio.estado === "ACTIVO"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-600"
+                          }`}
+                        >
                           {comercio.estado}
                         </span>
                       </td>
@@ -382,7 +393,6 @@ export default function ComerciosA() {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

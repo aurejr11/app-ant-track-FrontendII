@@ -216,7 +216,6 @@ export default function UsuariosA() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto p-8">
-
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Usuarios</h1>
@@ -248,7 +247,6 @@ export default function UsuariosA() {
 
           <form onSubmit={editando ? handleEditar : handleCrear}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
               {/* Nombre */}
               <div className="md:col-span-2">
                 <label className="block text-gray-600 mb-1 text-sm">
@@ -262,9 +260,7 @@ export default function UsuariosA() {
                   onChange={handleChange}
                   readOnly={!!editando}
                   className={`w-full border border-gray-300 rounded px-4 py-2 ${
-                    editando
-                      ? "bg-gray-100 cursor-not-allowed"
-                      : ""
+                    editando ? "bg-gray-100 cursor-not-allowed" : ""
                   }`}
                   required
                 />
@@ -317,9 +313,7 @@ export default function UsuariosA() {
                   onChange={handleChange}
                   readOnly={!!editando}
                   className={`w-full border border-gray-300 rounded px-4 py-2 ${
-                    editando
-                      ? "bg-gray-100 cursor-not-allowed"
-                      : ""
+                    editando ? "bg-gray-100 cursor-not-allowed" : ""
                   }`}
                   required
                 />
@@ -327,9 +321,7 @@ export default function UsuariosA() {
 
               {/* Edad */}
               <div>
-                <label className="block text-gray-600 mb-1 text-sm">
-                  Edad
-                </label>
+                <label className="block text-gray-600 mb-1 text-sm">Edad</label>
 
                 <input
                   type="number"
@@ -439,9 +431,7 @@ export default function UsuariosA() {
 
         {/* Tabla */}
         <div className="bg-white p-6 rounded shadow-md w-full">
-          <h3 className="text-lg font-semibold mb-4">
-            Usuarios registrados
-          </h3>
+          <h3 className="text-lg font-semibold mb-4">Usuarios registrados</h3>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
@@ -458,13 +448,8 @@ export default function UsuariosA() {
 
               <tbody>
                 {usuarios.map((u) => (
-                  <tr
-                    key={u.id}
-                    className="border-b hover:bg-gray-50"
-                  >
-                    <td className="px-4 py-2 font-medium">
-                      {u.nombre}
-                    </td>
+                  <tr key={u.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-2 font-medium">{u.nombre}</td>
 
                     <td className="px-4 py-2 text-gray-600">
                       <div className="text-xs text-gray-400">
@@ -477,14 +462,10 @@ export default function UsuariosA() {
                     <td className="px-4 py-2 text-gray-500">
                       <div className="font-bold">{u.telefono}</div>
                       <div className="text-xs">{u.correo}</div>
-                      <div className="text-xs italic">
-                        {u.direccion}
-                      </div>
+                      <div className="text-xs italic">{u.direccion}</div>
                     </td>
 
-                    <td className="px-4 py-2">
-                      ${u.presupMensual}
-                    </td>
+                    <td className="px-4 py-2">${u.presupMensual}</td>
 
                     <td className="px-4 py-2">
                       <span
