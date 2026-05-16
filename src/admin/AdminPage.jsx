@@ -12,11 +12,9 @@ import {
 } from "@mui/material";
 
 export default function Admin() {
-
   const navigate = useNavigate();
 
   const modules = [
-
     {
       title: "Usuarios",
       route: "/admin/usuarios",
@@ -36,29 +34,20 @@ export default function Admin() {
       title: "Métodos de Pago",
       route: "/admin/metodos-pago",
     },
-
-    {
-      title: "Pagos",
-      route: "/admin/pagos",
-    },
-
   ];
 
   return (
-
-   <Dialog
-  open={true}
-  maxWidth="md"
-  fullWidth
-
-  sx={{
-    "& .MuiDialog-paper": {
-      border: "none",
-      outline: "none",
-    },
-  }}
->
-
+    <Dialog
+      open={true}
+      maxWidth="md"
+      fullWidth
+      sx={{
+        "& .MuiDialog-paper": {
+          border: "none",
+          outline: "none",
+        },
+      }}
+    >
       <DialogTitle
         sx={{
           textAlign: "center",
@@ -70,12 +59,13 @@ export default function Admin() {
       </DialogTitle>
 
       <DialogContent>
-        <Grid container spacing={3}  sx={{ mt: 1, justifyContent:"center",pb: 3}}>
-
+        <Grid
+          container
+          spacing={3}
+          sx={{ mt: 1, justifyContent: "center", pb: 3 }}
+        >
           {modules.map((module, index) => (
-
             <Grid item xs={12} sm={6} md={4} key={index}>
-
               <Card
                 sx={{
                   borderRadius: "16px",
@@ -87,8 +77,6 @@ export default function Admin() {
                   },
                 }}
               >
-       
-
                 <CardContent
                   sx={{
                     display: "flex",
@@ -97,13 +85,12 @@ export default function Admin() {
                     alignItems: "center",
                   }}
                 >
-
                   <Typography
                     variant="h6"
                     fontWeight="bold"
                     sx={{
-                        color: "#4B5563",
-                        }}
+                      color: "#4B5563",
+                    }}
                   >
                     {module.title}
                   </Typography>
@@ -115,20 +102,12 @@ export default function Admin() {
                   >
                     Entrar
                   </Button>
-
                 </CardContent>
-
               </Card>
-
             </Grid>
-
           ))}
-
         </Grid>
-
       </DialogContent>
-
     </Dialog>
-
   );
 }

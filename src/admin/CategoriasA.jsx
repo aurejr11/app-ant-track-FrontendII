@@ -201,7 +201,6 @@ export default function CategoriasA() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto p-8">
-
         {/* Header modificado con los dos botones */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Gestión de Categorías</h1>
@@ -253,7 +252,9 @@ export default function CategoriasA() {
                 />
               </div>
               <div>
-                <label className="block text-gray-600 mb-1">Presupuesto máximo mensual</label>
+                <label className="block text-gray-600 mb-1">
+                  Presupuesto máximo mensual
+                </label>
                 <input
                   type="number"
                   name="presupuestoMaximoMensual"
@@ -309,14 +310,20 @@ export default function CategoriasA() {
                     <tr key={cat.id} className="border-b hover:bg-gray-50">
                       <td className="px-4 py-2">{cat.id}</td>
                       <td className="px-4 py-2 font-medium">{cat.nombre}</td>
-                      <td className="px-4 py-2 text-gray-500">{cat.descripcion}</td>
-                      <td className="px-4 py-2">${cat.presupuestoMaximoMensual}</td>
+                      <td className="px-4 py-2 text-gray-500">
+                        {cat.descripcion}
+                      </td>
                       <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          cat.estado === "ACTIVO"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-600"
-                        }`}>
+                        ${cat.presupuestoMaximoMensual}
+                      </td>
+                      <td className="px-4 py-2">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            cat.estado === "ACTIVO"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-600"
+                          }`}
+                        >
                           {cat.estado}
                         </span>
                       </td>
