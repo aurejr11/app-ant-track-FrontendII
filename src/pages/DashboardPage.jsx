@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { endPoints } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { clearSession, getUser } from "../helpers/local-storage";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
 
+  
+
   // local storage para recibir usuario
   let activeUser = getUser("user");
 
+  
   //para revisar que si
   console.log(activeUser.nombre);
 
@@ -29,6 +32,10 @@ export default function DashboardPage() {
   const [categorias, setCategorias] = useState([]);
   const [comercios, setComercios] = useState([]);
   const [metodoPagos, setMetodoPagos] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
+
+  const [gastoEditar, setGastoEditar] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   //PARA LISTAR GASTOS recibe un parametro id para listar al usuario activo
   function getGastos(id) {
@@ -85,7 +92,18 @@ export default function DashboardPage() {
     getCategorias();
     getComercios();
     getMetodoPagos();
+
   }, []);
+
+  //filtros
+
+  const gastosFiltrados = gastos.filter((item) => {
+    return item.descripcion
+      .toLowerCase()
+      .includes(busqueda.toLowerCase());
+  });
+
+
 
   // FUNCION LOGOUT
   const handleLogout = () => {
@@ -101,7 +119,7 @@ export default function DashboardPage() {
     }).then((result) => {
       if (result.isConfirmed) {
         clearSession("user");
-        navigate("/");
+        navigate("/", { replace: true });
       }
     });
   };
@@ -148,11 +166,12 @@ export default function DashboardPage() {
 
   //para editar
 
-  const [gastoEditar, setGastoEditar] = useState(null);
+
 
   function handleEditar(id) {
     let gasto = gastos.find((g) => g.id === id);
     setGastoEditar(gasto); // guarda el gasto en el estado
+    setOpenModal(true);
   }
 
   //aca enviamos todo
@@ -189,6 +208,7 @@ export default function DashboardPage() {
           });
 
           getGastos(activeUser.id);
+          setOpenModal(false);
 
           setGasto({
             descripcion: "",
@@ -243,6 +263,7 @@ export default function DashboardPage() {
           });
 
           getGastos(activeUser.id);
+          setOpenModal(false);
 
           setGasto({
             descripcion: "",
@@ -290,6 +311,16 @@ export default function DashboardPage() {
         </div>
 
         <button
+          onClick={() => {
+            setOpenModal(true);
+            setGastoEditar(null);
+          }}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+        >
+          Crear gasto
+        </button>
+
+        <button
           onClick={handleLogout}
           className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
           title="Cerrar sesión"
@@ -310,10 +341,40 @@ export default function DashboardPage() {
           <span className="hidden sm:inline">Salir</span>
         </button>
 
-        {/* Formulario */}
-        <div className="bg-white p-6 rounded shadow-md w-full mb-8 mt-6">
-          <h3 className="text-lg font-semibold mb-4">Registrar nuevo gasto</h3>
-          <form onSubmit={handleSubmit}>
+        
+      </div>
+
+      {openModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          
+          <div className="bg-white p-6 rounded shadow-md w-full max-w-md relative">
+            
+            <button
+              onClick={() => {
+                setOpenModal(false);
+                setGastoEditar(null);
+              
+                setGasto({
+                  descripcion: "",
+                  valor: "",
+                  categoriaId: "",
+                  metodoPagoId: "",
+                  comercioId: "",
+                  usuarioId: activeUser.id,
+                });
+              }}
+              className="absolute top-2 right-3 text-gray-500 hover:text-black"
+            >
+              X
+            </button>
+
+            <h3 className="text-lg font-semibold mb-4">
+              {gastoEditar ? "Editar gasto" : "Registrar nuevo gasto"}
+            </h3>
+
+            {/* FORMULARIO */}
+
+            <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-gray-600 mb-1">Monto</label>
               <input
@@ -415,53 +476,70 @@ export default function DashboardPage() {
               Registrar gasto
             </button>
           </form>
+
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Historial */}
-      <div className="bg-white p-6 rounded shadow-md w-full">
+      <div className="bg-white p-4 md:p-6 rounded shadow-md w-full overflow-hidden">
         <h3 className="text-lg font-semibold mb-4">Historial de gastos</h3>
+        <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Buscar gasto..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="w-full border border-gray-300 rounded px-4 py-2"
+        />
+      </div>
         {gastos.length === 0 ? (
           <p className="text-gray-400">No hay gastos registrados aún.</p>
         ) : (
+          
+          
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+            <table className="w-full text-xs md:text-sm text-left">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-[10px] md:text-xs">
                 <tr>
-                  <th className="px-4 py-2">Descripción</th>
-                  <th className="px-4 py-2">Categoría</th>
-                  <th className="px-4 py-2">Método de pago</th>
-                  <th className="px-4 py-2">Comercio</th>
-                  <th className="px-4 py-2 text-right">Valor</th>
+                  <th className="px-2 py-2">Descripción</th>
+                  <th className="px-2 py-2">Categoría</th>
+                  <th className="px-2 py-2">Método de pago</th>
+                  <th className="px-2 py-2">Comercio</th>
+                  <th className="px-2 py-2 text-right">Valor</th>
+                  <th className="px-2 py-2 text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {gastos.map((g) => (
-                  <tr key={g.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2">{g.descripcion}</td>
-                    <td className="px-4 py-2">{g.categoria.nombre}</td>
-                    <td className="px-4 py-2">{g.metodoPago.descripcion}</td>
-                    <td className="px-4 py-2">{g.comercio.nombreComercio}</td>
-                    <td className="px-4 py-2 text-right font-semibold">
+                {gastosFiltrados.map((g) => (
+                  <tr key={g.id} className="border-b hover:bg-blue-50 transition">
+                    <td className="px-2 py-2 max-w-[120px] truncate">
+                      {g.descripcion}
+                    </td>
+                    <td className="px-2 py-2">{g.categoria.nombre}</td>
+                    <td className="px-2 py-2">{g.metodoPago.descripcion}</td>
+                    <td className="px-2 py-2">{g.comercio.nombreComercio}</td>
+                    <td className="px-2 py-2 text-right font-bold text-blue-600">
                       ${g.valor}
                     </td>
-                    <td className="px-4 py-2">
-                      <td className="px-4 py-2 flex gap-2">
+                    <td className="px-2 py-2">
+                    <div className="flex flex-col md:flex-row gap-2 justify-center">
+                        
                         <button
                           onClick={() => handleEditar(g.id)}
-                          className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 
-                     rounded text-xs"
+                          className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-xs"
                         >
                           Editar
                         </button>
+
                         <button
                           onClick={() => handleEliminar(g.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded 
-                    text-xs"
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs"
                         >
                           Eliminar
                         </button>
-                      </td>
+
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -473,7 +551,7 @@ export default function DashboardPage() {
       {/* ✅ NUEVO — botón flotante para ir a estadísticas */}
       <button
         onClick={() => navigate("/estadisticas")}
-        className="fixed top-11 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
+        className="fixed top-25 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
         title="Ver estadísticas en gráficas"
       >
         <svg
@@ -493,6 +571,66 @@ export default function DashboardPage() {
         </svg>
         Ver estadísticas
       </button>
+
+          <button
+      onClick={() =>
+        window.open("http://localhost:8501", "_blank")
+      }
+    >
+      Abrir Dashboard
+    </button>
+    <button
+        onClick={() => navigate("/analytics")}
+        className="fixed top-11 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
+        title="Ver python"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+        Ver Python
+      </button>
+
+      <button
+        onClick={() => window.open("http://localhost:8501", "_blank")} 
+        className="fixed top-40 right-8 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all z-50"
+        title="Ver streamlit"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
+        </svg>
+        Ver Streamlit
+      </button>
+
+        
+          <button
+      
+    >
+      Abrir Dashboard
+    </button>
     </div>
   );
 }
