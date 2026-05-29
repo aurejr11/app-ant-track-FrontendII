@@ -51,9 +51,9 @@ export default function LoginPage() {
           // VALIDACIÓN ADMIN
 
           if (userLogin.rol === "ADMIN") {
-            navigate("/admin");
+            navigate("/admin",  { replace: true });
           } else {
-            navigate("/dashboard");
+            navigate("/dashboard",  { replace: true });
           }
         });
       } else {
